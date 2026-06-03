@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fün Superfoods · Informe de Performance · Mayo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --azul: #2E3B74;
+    --verde: #256A46;
+    --rojo: #B9352E;
+    --amber: #E99F2F;
+    --gris: #3D3D3D;
+    --crema: #F3F0EB;
+    --negro: #1A1A1A;
+    --azul-dark: #181E35;
+    --verde-dark: #1E2A1E;
+    --google: #E99F2F;
+    --meta: #5BBF8A;
+    --seo: #7B9FE8;
+    --white: #F0EDE8;
+    --muted: #9A9A9A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--negro); color: var(--white); font-family: 'Pathway Gothic One', sans-serif; font-size: 16px; line-height: 1.5; }
+  h1,h2,h3,.kpi-val,.section-num { font-family: 'Oswald', sans-serif; }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--azul);
+    border-bottom: 4px solid var(--amber);
+    padding: 60px 48px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute; top:-80px; right:-80px;
+    width:400px; height:400px;
+    border-radius:50%;
+    background: rgba(233,159,47,0.06);
+  }
+  .badge {
+    display:inline-block;
+    background: rgba(233,159,47,0.15);
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    font-family:'Oswald',sans-serif;
+    font-size:11px; letter-spacing:3px; text-transform:uppercase;
+    padding:6px 16px; border-radius:2px;
+    animation: pulse 3s ease-in-out infinite;
+    margin-bottom:16px;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+  .hero-period { font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); margin-bottom:8px; opacity:.8; }
+  .hero h1 { font-size:clamp(32px,5vw,56px); font-weight:700; text-transform:uppercase; line-height:1; margin-bottom:8px; }
+  .hero-sub { color:rgba(240,237,232,.6); font-size:15px; margin-bottom:40px; }
+  .hero-kpis { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:rgba(233,159,47,.2); border:1px solid rgba(233,159,47,.2); }
+  .hero-kpi { background:rgba(24,30,53,.7); padding:20px 16px; text-align:center; }
+  .hero-kpi .label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); opacity:.8; display:block; margin-bottom:6px; }
+  .hero-kpi .val { font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; }
+
+  /* ── LAYOUT ── */
+  .section { padding:56px 48px; }
+  .section:nth-child(odd) { background: var(--azul-dark); }
+  .section:nth-child(even) { background: var(--verde-dark); }
+  .section-label {
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:8px;
+  }
+  .section-label .num { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--amber); font-family:'Oswald',sans-serif; }
+  .section-label::before { content:''; display:block; width:3px; height:20px; background:var(--amber); }
+  .section-title { font-size:clamp(22px,3vw,32px); font-weight:700; text-transform:uppercase; margin-bottom:6px; }
+  .section-desc { color:var(--muted); font-size:14px; margin-bottom:32px; max-width:700px; }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid { display:grid; gap:16px; }
+  .kpi-grid-6 { grid-template-columns:repeat(6,1fr); }
+  .kpi-grid-4 { grid-template-columns:repeat(4,1fr); }
+  .kpi-grid-3 { grid-template-columns:repeat(3,1fr); }
+  .kpi-grid-2 { grid-template-columns:repeat(2,1fr); }
+  .kpi-card {
+    background: var(--gris);
+    border-top: 3px solid var(--amber);
+    padding: 20px;
+    border-radius: 2px;
+  }
+  .kpi-card.google { border-top-color: var(--google); }
+  .kpi-card.meta   { border-top-color: var(--meta); }
+  .kpi-card.seo    { border-top-color: var(--seo); }
+  .kpi-card.danger { border-top-color: var(--rojo); }
+  .kpi-card.success{ border-top-color: #4CAF50; }
+  .kpi-card .kpi-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px; }
+  .kpi-card .kpi-val { font-size:clamp(22px,2.5vw,30px); font-weight:700; font-family:'Oswald',sans-serif; line-height:1; margin-bottom:6px; }
+  .kpi-card .kpi-delta { font-size:12px; }
+  .kpi-card .kpi-sub { font-size:12px; color:var(--muted); margin-top:4px; }
+  .delta-up   { color:#4CAF50; }
+  .delta-down { color:var(--rojo); }
+  .delta-warn { color:var(--amber); }
+
+  /* ── CHANNEL CARDS ── */
+  .channel-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px; }
+  .channel-card { background:var(--gris); padding:28px; border-radius:2px; border-top:4px solid var(--amber); }
+  .channel-card.google { border-top-color:var(--google); }
+  .channel-card.meta   { border-top-color:var(--meta); }
+  .channel-name { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; margin-bottom:4px; }
+  .channel-name.google { color:var(--google); }
+  .channel-name.meta   { color:var(--meta); }
+  .channel-roas { font-family:'Oswald',sans-serif; font-size:52px; font-weight:700; line-height:1; margin-bottom:4px; }
+  .channel-roas-label { font-size:11px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:20px; }
+  .channel-metrics { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+  .channel-metric .label { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); display:block; }
+  .channel-metric .val { font-family:'Oswald',sans-serif; font-size:18px; font-weight:600; }
+
+  /* ── INSIGHT BOX ── */
+  .insight {
+    background: rgba(46,59,116,0.4);
+    border-left: 4px solid var(--amber);
+    padding: 20px 24px;
+    margin-top: 24px;
+    border-radius: 0 2px 2px 0;
+  }
+  .insight-title { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--amber); margin-bottom:8px; }
+  .insight p { font-size:14px; line-height:1.7; color:rgba(240,237,232,.85); }
+
+  /* ── TABLES ── */
+  .table-wrap { overflow-x:auto; margin:16px 0; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  thead th { background:rgba(233,159,47,.1); color:var(--amber); font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; padding:10px 12px; text-align:left; border-bottom:1px solid rgba(233,159,47,.2); }
+  tbody tr { border-bottom:1px solid rgba(255,255,255,.05); }
+  tbody tr:hover { background:rgba(255,255,255,.03); }
+  tbody td { padding:10px 12px; color:rgba(240,237,232,.8); }
+  .badge-green  { background:rgba(76,175,80,.15); color:#4CAF50; padding:2px 8px; border-radius:2px; font-size:11px; font-family:'Oswald',sans-serif; }
+  .badge-amber  { background:rgba(233,159,47,.15); color:var(--amber); padding:2px 8px; border-radius:2px; font-size:11px; font-family:'Oswald',sans-serif; }
+  .badge-red    { background:rgba(185,53,46,.15); color:var(--rojo); padding:2px 8px; border-radius:2px; font-size:11px; font-family:'Oswald',sans-serif; }
+
+  /* ── CHARTS ── */
+  .chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:24px 0; }
+  .chart-grid-1 { grid-template-columns:1fr; }
+  .chart-box { background:var(--gris); padding:24px; border-radius:2px; }
+  .chart-title { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); margin-bottom:16px; }
+  .chart-container { position:relative; }
+
+  /* ── FUNNEL ── */
+  .funnel { display:flex; flex-direction:column; align-items:center; gap:0; }
+  .funnel-step { width:100%; max-width:600px; display:flex; align-items:center; gap:16px; margin-bottom:0; }
+  .funnel-bar-wrap { flex:1; }
+  .funnel-bar {
+    background: linear-gradient(90deg, var(--amber), rgba(233,159,47,.3));
+    height:40px; border-radius:2px; display:flex; align-items:center; padding:0 16px;
+    font-family:'Oswald',sans-serif; font-size:14px; font-weight:600;
+    transition:width .5s ease;
+  }
+  .funnel-label { width:160px; text-align:right; font-size:12px; color:var(--muted); }
+  .funnel-arrow { font-size:10px; color:var(--amber); margin:2px 0 2px 180px; opacity:.6; }
+  .funnel-pct { width:60px; font-size:11px; color:var(--amber); font-family:'Oswald',sans-serif; }
+
+  /* ── ALERTS ── */
+  .alert { padding:16px 20px; border-radius:2px; margin-bottom:12px; display:flex; gap:12px; align-items:flex-start; }
+  .alert-danger  { background:rgba(185,53,46,.1);  border-left:3px solid var(--rojo);  }
+  .alert-warning { background:rgba(233,159,47,.1); border-left:3px solid var(--amber); }
+  .alert-success { background:rgba(76,175,80,.1);  border-left:3px solid #4CAF50; }
+  .alert-info    { background:rgba(123,159,232,.1);border-left:3px solid var(--seo); }
+  .alert-icon { font-size:18px; flex-shrink:0; margin-top:2px; }
+  .alert-title { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+  .alert p { font-size:13px; color:rgba(240,237,232,.75); line-height:1.6; }
+
+  /* ── ACTION CARDS ── */
+  .action-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .action-card { background:var(--gris); padding:24px; border-radius:2px; border-left:4px solid; }
+  .action-card.urgente    { border-left-color:var(--rojo); }
+  .action-card.alta       { border-left-color:var(--amber); }
+  .action-card.media      { border-left-color:var(--seo); }
+  .action-card.oportunidad{ border-left-color:var(--meta); }
+  .action-priority { font-size:10px; letter-spacing:2px; text-transform:uppercase; font-family:'Oswald',sans-serif; margin-bottom:6px; opacity:.8; }
+  .action-title { font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; margin-bottom:8px; }
+  .action-desc { font-size:13px; color:rgba(240,237,232,.75); line-height:1.6; margin-bottom:10px; }
+  .action-impact { font-size:11px; font-family:'Oswald',sans-serif; letter-spacing:1px; text-transform:uppercase; }
+
+  /* ── PROYECTION ── */
+  .proj-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .proj-card { background:var(--gris); padding:28px; border-radius:2px; }
+  .proj-title { font-family:'Oswald',sans-serif; font-size:18px; font-weight:700; margin-bottom:4px; }
+  .proj-sub { font-size:12px; color:var(--muted); margin-bottom:20px; }
+  .proj-metrics { display:grid; gap:12px; }
+  .proj-metric .label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+  .proj-metric .val { font-family:'Oswald',sans-serif; font-size:24px; }
+
+  /* ── PROGRESS BARS ── */
+  .progress-item { margin-bottom:14px; }
+  .progress-top { display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; }
+  .progress-bar { height:6px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; border-radius:3px; background:var(--amber); }
+
+  /* ── DELTA TABLE ── */
+  .delta-table { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px; }
+  .delta-item { background:rgba(255,255,255,.04); padding:14px; border-radius:2px; text-align:center; }
+  .delta-item .metric { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .delta-item .curr { font-family:'Oswald',sans-serif; font-size:18px; font-weight:700; }
+  .delta-item .delta { font-size:11px; margin-top:4px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--azul);
+    border-top: 4px solid var(--amber);
+    padding:32px 48px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  footer .logo { font-family:'Oswald',sans-serif; font-size:18px; font-weight:700; letter-spacing:2px; }
+  footer .meta { font-size:12px; color:rgba(240,237,232,.5); }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:900px) {
+    .hero-kpis { grid-template-columns:repeat(3,1fr); }
+    .kpi-grid-6,.kpi-grid-4 { grid-template-columns:repeat(2,1fr); }
+    .channel-grid,.chart-grid,.proj-grid,.action-grid { grid-template-columns:1fr; }
+    .delta-table { grid-template-columns:repeat(2,1fr); }
+  }
+  @media(max-width:600px) {
+    .section { padding:40px 20px; }
+    .hero { padding:40px 20px 32px; }
+    .hero-kpis { grid-template-columns:1fr 1fr; }
+    .kpi-grid-6,.kpi-grid-4,.kpi-grid-3,.kpi-grid-2 { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ 00 · HERO ══════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="badge">La Ola Studio · Informe de Performance</div>
+  <div class="hero-period">Performance Report · Mayo 2026</div>
+  <h1>Fün Superfoods<br>Mayo 2026</h1>
+  <div class="hero-sub">Análisis completo del mes — Paid Media (Google + Meta) · SEO · Orgánico Instagram</div>
+  <div class="hero-kpis">
+    <div class="hero-kpi"><span class="label">Período</span><span class="val">01–31 May 2026</span></div>
+    <div class="hero-kpi"><span class="label">Inversión Total</span><span class="val">$631.783</span></div>
+    <div class="hero-kpi"><span class="label">Ingresos B2C Atribuidos</span><span class="val">$1.197.037</span></div>
+    <div class="hero-kpi"><span class="label">Leads B2B Generados</span><span class="val">47</span></div>
+    <div class="hero-kpi"><span class="label">CPL B2B</span><span class="val">$4.539</span></div>
+  </div>
+</section>
+
+<!-- ══ 01 · RESUMEN EJECUTIVO ════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">01 · Resumen Ejecutivo</span></div>
+  <h2 class="section-title">Estado del Mes</h2>
+  <div class="alert alert-info" style="margin-bottom:24px;">
+    <div class="alert-icon">ℹ️</div>
+    <div><div class="alert-title">Modelo de negocio dual: B2B + B2C</div><p>Fün Superfoods opera en dos verticales simultáneas. <strong>B2C</strong>: venta directa al consumidor final vía e-commerce. <strong>B2B</strong>: venta a restaurantes, hoteles, cafeterías y distribuidores, gestionada mediante generación de leads desde Meta Ads. Ambas dimensiones se analizan en este informe con sus métricas propias — el ROAS no es el indicador correcto para evaluar B2B; el CPL (costo por lead) y el volumen de leads sí lo son.</p></div>
+  </div>
+
+  <p class="section-desc">Mayo 2026 fue un mes de recuperación sólida en ambas verticales. En B2C, el ROAS se recuperó desde 0.03x (abril) a 1.89x (Meta) y 1.92x (Google), con 47 compras atribuidas. En B2B, se generaron 47 leads a un CPL de $4.539 — el segundo mejor resultado histórico y una recuperación significativa tras el CPL de $12.419 de abril. El contenido orgánico de Instagram tuvo el mejor mes del trimestre (+23% visualizaciones, +376 seguidores).</p>
+
+  <div class="kpi-grid kpi-grid-6">
+    <div class="kpi-card">
+      <span class="kpi-label">ROAS B2C Consolidado</span>
+      <div class="kpi-val">1.89x</div>
+      <div class="kpi-delta delta-up">↑ vs abr (0.28x)</div>
+      <div class="kpi-sub">Meta 1.89x · Google 1.92x</div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Ingresos B2C Atribuidos</span>
+      <div class="kpi-val">$1.197.037</div>
+      <div class="kpi-delta delta-up">↑ vs abr ($72.839)</div>
+      <div class="kpi-sub">Meta $1.015.411 + Google $181.626</div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Inversión Total Paid Media</span>
+      <div class="kpi-val">$631.783</div>
+      <div class="kpi-delta delta-down">↑ vs abr $473.662 (+33%)</div>
+      <div class="kpi-sub">Meta $537.168 · Google $94.615</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:var(--seo);">
+      <span class="kpi-label">Leads B2B Generados</span>
+      <div class="kpi-val" style="color:var(--seo);">47</div>
+      <div class="kpi-delta delta-up">↑ vs abr 17 (+176%)</div>
+      <div class="kpi-sub">101 contactos adicionales</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:var(--seo);">
+      <span class="kpi-label">CPL B2B (Costo por Lead)</span>
+      <div class="kpi-val" style="color:var(--seo);">$4.539</div>
+      <div class="kpi-delta delta-up">↓ vs abr $12.419 (−63%)</div>
+      <div class="kpi-sub">Inversión B2B: $213.345</div>
+    </div>
+    <div class="kpi-card seo">
+      <span class="kpi-label">Clics Orgánicos SEO</span>
+      <div class="kpi-val">412</div>
+      <div class="kpi-delta delta-up">↑ vs abr 403 (+2,2%)</div>
+      <div class="kpi-sub">44.553 impresiones · pos. 8.5</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">⚡ Lectura Estratégica del Mes</div>
+    <p>Mayo cierra bien en ambas líneas de negocio pero con lógicas muy distintas. En B2C, la recuperación del ROAS es real pero frágil: depende de 2 creativos (Video pineado + Video Pitaya sexy) que concentran el 97% de los ingresos atribuidos. En B2B, el mes fue el segundo mejor en generación de leads (47 a CPL $4.539), impulsado por el "Video B2B Voz en off Cami" que superó claramente al formato de gráficas. El gran pendiente del modelo B2B es la trazabilidad post-lead: ¿cuántos de los 143 leads acumulados desde enero han cerrado? Sin ese dato, no es posible calcular el verdadero retorno de la inversión B2B.</p>
+  </div>
+</section>
+
+<!-- ══ 02 · COMPARATIVA YOY ══════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">02 · Comparativa Año a Año</span></div>
+  <h2 class="section-title">Mayo 2026 vs Mayo 2025</h2>
+  <p class="section-desc">⚠️ No se dispone de datos de paid media de mayo 2025. La comparativa YoY disponible es solo de SEO (Search Console cubre desde mayo 2025).</p>
+
+  <div class="kpi-grid kpi-grid-3">
+    <div class="kpi-card seo">
+      <span class="kpi-label">Clics Orgánicos YoY</span>
+      <div class="kpi-val">412 vs 680</div>
+      <div class="kpi-delta delta-down">↓ −39,4% YoY</div>
+      <div class="kpi-sub">Mayo 2025: 680 clics</div>
+    </div>
+    <div class="kpi-card seo">
+      <span class="kpi-label">Impresiones YoY</span>
+      <div class="kpi-val">44.553 vs 34.957</div>
+      <div class="kpi-delta delta-up">↑ +27,5% YoY</div>
+      <div class="kpi-sub">Más visibilidad, menos clics</div>
+    </div>
+    <div class="kpi-card danger">
+      <span class="kpi-label">CTR YoY</span>
+      <div class="kpi-val">0,92% vs 1,95%</div>
+      <div class="kpi-delta delta-down">↓ −52,8% YoY</div>
+      <div class="kpi-sub">Posición: 8.5 vs 10.6 (mejora)</div>
+    </div>
+  </div>
+
+  <div class="table-wrap" style="margin-top:24px;">
+    <table>
+      <thead><tr><th>Canal / Métrica</th><th>May 2026</th><th>May 2025</th><th>Δ YoY</th><th>Nota</th></tr></thead>
+      <tbody>
+        <tr><td>Clics orgánicos SEO</td><td>412</td><td>680</td><td><span class="badge-red">−39,4%</span></td><td>Degradación de CTR pese a mejora de posición</td></tr>
+        <tr><td>Impresiones SEO</td><td>44.553</td><td>34.957</td><td><span class="badge-green">+27,5%</span></td><td>Mayor visibilidad alcanzada</td></tr>
+        <tr><td>CTR orgánico</td><td>0,92%</td><td>1,95%</td><td><span class="badge-red">−52,8%</span></td><td>Snippets compiten con resultados AI</td></tr>
+        <tr><td>Posición media</td><td>8,5</td><td>10,6</td><td><span class="badge-green">+19,8%</span></td><td>Mejora real de rankings</td></tr>
+        <tr><td>Instagram Seguidores</td><td>~12.000</td><td>N/D</td><td>—</td><td>Dato histórico no disponible</td></tr>
+        <tr><td>Google Ads inv.</td><td>$94.615</td><td>N/D</td><td>—</td><td>Sin datos mayo 2025</td></tr>
+        <tr><td>Meta Ads inv.</td><td>$537.168</td><td>N/D</td><td>—</td><td>Sin datos mayo 2025</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">📊 Hallazgo YoY</div>
+    <p>La señal más relevante del análisis anual en SEO es la paradoja impresiones↑/clics↓: funsuperfoods.cl aparece en más búsquedas que hace un año, pero los usuarios hacen clic menos. Esto es consistente con el fenómeno de los resultados AI Overview de Google que resuelven consultas informacionales sin necesidad de hacer clic. La oportunidad está en migrar el foco hacia keywords transaccionales (acaí congelado comprar, pitaya precio, comprar açaí Chile) donde la intención de compra supera la informacional.</p>
+  </div>
+</section>
+
+<!-- ══ 03 · DESEMPEÑO PAID MEDIA ══════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">03 · Desempeño Paid Media por Canal</span></div>
+  <h2 class="section-title">Google Ads + Meta Ads — Mayo 2026</h2>
+  <p class="section-desc">Análisis comparativo de ambos canales de pauta digital y su evolución respecto al mes anterior.</p>
+
+  <div class="channel-grid">
+    <div class="channel-card google">
+      <div class="channel-name google">Google Ads</div>
+      <div class="channel-roas" style="color:var(--google)">1.92x</div>
+      <div class="channel-roas-label">ROAS del Mes</div>
+      <div class="channel-metrics">
+        <div class="channel-metric"><span class="label">Inversión</span><span class="val">$94.615</span></div>
+        <div class="channel-metric"><span class="label">Ingresos Atrib.</span><span class="val">$181.626</span></div>
+        <div class="channel-metric"><span class="label">Conversiones</span><span class="val">13</span></div>
+        <div class="channel-metric"><span class="label">CPA Promedio</span><span class="val">$7.278</span></div>
+        <div class="channel-metric"><span class="label">Clics</span><span class="val">708</span></div>
+        <div class="channel-metric"><span class="label">Impresiones</span><span class="val">11.718</span></div>
+      </div>
+      <div class="insight" style="margin-top:0">
+        <div class="insight-title">Rol Google Ads</div>
+        <p>Canal de captura de demanda existente. P.Max Gregorio es la campaña estrella (ROAS 53x con $3.403 invertidos). Búsqueda Basal genera clics pero sin conversiones directas atribuidas — su rol es awareness/consideración.</p>
+      </div>
+    </div>
+
+    <div class="channel-card meta">
+      <div class="channel-name meta">Meta Ads</div>
+      <div class="channel-roas" style="color:var(--meta)">1.89x</div>
+      <div class="channel-roas-label">ROAS del Mes</div>
+      <div class="channel-metrics">
+        <div class="channel-metric"><span class="label">Inversión</span><span class="val">$537.168</span></div>
+        <div class="channel-metric"><span class="label">Ingresos Atrib.</span><span class="val">$1.015.411</span></div>
+        <div class="channel-metric"><span class="label">Compras</span><span class="val">34</span></div>
+        <div class="channel-metric"><span class="label">CPA Promedio</span><span class="val">$15.799</span></div>
+        <div class="channel-metric"><span class="label">Alcance</span><span class="val">158.447</span></div>
+        <div class="channel-metric"><span class="label">Carrito Añadido</span><span class="val">253</span></div>
+      </div>
+      <div class="insight" style="margin-top:0">
+        <div class="insight-title">Rol Meta Ads</div>
+        <p>Canal de generación de demanda y reconversión. "Ventas permanente" genera el 84% de ingresos con ROAS 4.03x. La campaña B2B consume $213K sin retorno comercial medible — candidata prioritaria a pausa o rediseño.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-family:'Oswald',sans-serif; font-size:14px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); margin-bottom:12px;">Comparativa vs Mes Anterior (Abril 2026)</h3>
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);">
+    <div class="kpi-card google">
+      <span class="kpi-label">Google ROAS</span>
+      <div class="kpi-val">1.92x</div>
+      <div class="kpi-delta delta-up">↑ vs abr 0.69x (+178%)</div>
+    </div>
+    <div class="kpi-card google">
+      <span class="kpi-label">Google Conv.</span>
+      <div class="kpi-val">13</div>
+      <div class="kpi-delta delta-up">↑ vs abr 6 (+117%)</div>
+    </div>
+    <div class="kpi-card meta">
+      <span class="kpi-label">Meta ROAS</span>
+      <div class="kpi-val">1.89x</div>
+      <div class="kpi-delta delta-up">↑ vs abr 0.03x (+6.200%)</div>
+    </div>
+    <div class="kpi-card meta">
+      <span class="kpi-label">Meta Inversión</span>
+      <div class="kpi-val">$537.168</div>
+      <div class="kpi-delta delta-down">↑ vs abr +88% (más gasto)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 04 · SEO ════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">04 · SEO — Tráfico Orgánico de Búsqueda</span></div>
+  <h2 class="section-title">Google Search Console · Mayo 2026</h2>
+  <p class="section-desc">Datos extraídos directamente de Google Search Console para el período 1–31 mayo 2026.</p>
+
+  <div class="kpi-grid kpi-grid-4">
+    <div class="kpi-card seo">
+      <span class="kpi-label">Clics Orgánicos</span>
+      <div class="kpi-val">412</div>
+      <div class="kpi-delta delta-up">↑ vs abr 403 (+2,2%)</div>
+    </div>
+    <div class="kpi-card seo">
+      <span class="kpi-label">Impresiones</span>
+      <div class="kpi-val">44.553</div>
+      <div class="kpi-delta delta-down">↓ vs abr 47.280 (−5,8%)</div>
+    </div>
+    <div class="kpi-card danger">
+      <span class="kpi-label">CTR Promedio</span>
+      <div class="kpi-val">0,92%</div>
+      <div class="kpi-delta delta-down">↓ vs abr 0,85% (+8%)</div>
+    </div>
+    <div class="kpi-card seo">
+      <span class="kpi-label">Posición Media</span>
+      <div class="kpi-val">8,5</div>
+      <div class="kpi-delta delta-down">↓ vs abr 7,8 (−8,5%)</div>
+    </div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:24px;">
+    <div class="chart-box">
+      <div class="chart-title">Top 10 Consultas · Mayo 2026</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Keyword</th><th>Clics</th><th>Impr.</th><th>CTR</th><th>Posición</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>acai</td><td>61</td><td>13.784</td><td>0,44%</td><td>9,4</td></tr>
+            <tr><td>2</td><td>acai fruta</td><td>34</td><td>2.095</td><td>1,62%</td><td>5,4</td></tr>
+            <tr><td>3</td><td>pitaya</td><td>18</td><td>8.496</td><td>0,21%</td><td>7,7</td></tr>
+            <tr><td>4</td><td>fun superfoods</td><td>16</td><td>30</td><td>53,33%</td><td>1,0</td></tr>
+            <tr><td>5</td><td>fruta del dragon</td><td>8</td><td>1.488</td><td>0,54%</td><td>7,3</td></tr>
+            <tr><td>6</td><td>acai congelado</td><td>7</td><td>117</td><td>5,98%</td><td>5,3</td></tr>
+            <tr><td>7</td><td>pitaya chile</td><td>6</td><td>437</td><td>1,37%</td><td>6,2</td></tr>
+            <tr><td>8</td><td>acai por mayor</td><td>6</td><td>62</td><td>9,68%</td><td>10,7</td></tr>
+            <tr><td>9</td><td>acai sin azucar chile</td><td>5</td><td>20</td><td>25,00%</td><td>2,2</td></tr>
+            <tr><td>10</td><td>dragon fruit</td><td>4</td><td>1.208</td><td>0,33%</td><td>9,1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Top 5 Páginas · Mayo 2026</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Página</th><th>Clics</th><th>CTR</th><th>Pos.</th></tr></thead>
+          <tbody>
+            <tr><td>/producto/pulpa-de-acai/</td><td>196</td><td>0,90%</td><td>8,6</td></tr>
+            <tr><td>/producto/pulpa-de-pitaya/</td><td>82</td><td>0,51%</td><td>8,4</td></tr>
+            <tr><td>/ (home)</td><td>64</td><td>7,02%</td><td>12,1</td></tr>
+            <tr><td>/producto/blend-de-acai/</td><td>21</td><td>1,22%</td><td>9,4</td></tr>
+            <tr><td>/producto/acai-big-box/</td><td>21</td><td>2,30%</td><td>9,3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="chart-title">Oportunidades Detectadas</div>
+        <div class="alert alert-warning" style="margin-top:8px;">
+          <div class="alert-icon">⚡</div>
+          <div><div class="alert-title">Keyword de alta conversión</div><p>"acai por mayor" tiene CTR 9,68% en posición 10,7 — si sube a top 5, podría multiplicar x3 los clics. Contenido B2B específico recomendado.</p></div>
+        </div>
+        <div class="alert alert-warning">
+          <div class="alert-icon">⚠️</div>
+          <div><div class="alert-title">CTR caída sistemática</div><p>"acai" tiene 13.784 impresiones y solo 0,44% CTR. El título/meta description de /pulpa-de-acai/ necesita reformulación urgente con propuesta de valor clara.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-box" style="margin-top:16px;">
+    <div class="chart-title">Evolución Clics Orgánicos — 13 Meses</div>
+    <div class="chart-container" style="height:200px;">
+      <canvas id="chartSEO"></canvas>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">🔍 Análisis de Intención de Búsqueda</div>
+    <p>El 70% de las impresiones provienen de keywords de categoría (acai, pitaya, fruta del dragón) con intención informacional, donde los usuarios buscan conocer el producto, no comprarlo. La oportunidad estratégica está en las keywords de cola larga transaccional: "acai congelado" (CTR 5,98%), "acai sin azucar chile" (CTR 25%) y "acai por mayor" (CTR 9,68%) muestran que cuando el usuario tiene intención específica, el sitio convierte bien. Prioridad: crear landing pages o contenido optimizado para estas keywords de alta intención.</p>
+  </div>
+</section>
+
+<!-- ══ 05 · REDES SOCIALES ORGÁNICAS ═════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">05 · Redes Sociales Orgánicas</span></div>
+  <h2 class="section-title">Instagram — Mayo 2026</h2>
+  <p class="section-desc">Datos extraídos del panel profesional de Instagram. Período: 1–31 mayo 2026.</p>
+
+  <div class="kpi-grid kpi-grid-4">
+    <div class="kpi-card">
+      <span class="kpi-label">Visualizaciones Totales</span>
+      <div class="kpi-val">389.185</div>
+      <div class="kpi-delta delta-up">↑ vs abr 279.489 (+39,3%)</div>
+      <div class="kpi-sub">92,4% proviene de anuncios</div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Cuentas Alcanzadas</span>
+      <div class="kpi-val">126.909</div>
+      <div class="kpi-delta delta-up">↑ vs abr 96.684 (+31,3%)</div>
+    </div>
+    <div class="kpi-card success">
+      <span class="kpi-label">Seguidores Actuales</span>
+      <div class="kpi-val">~12.000</div>
+      <div class="kpi-delta delta-up">↑ +376 en mayo (+3,2%)</div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Viz. Orgánicas (reels+posts)</span>
+      <div class="kpi-val">23.000</div>
+      <div class="kpi-delta delta-up">↑ vs abr 18.000 (+23%)</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr); margin-top:16px;">
+    <div class="kpi-card">
+      <span class="kpi-label">Visitas al Perfil</span>
+      <div class="kpi-val">2.039</div>
+      <div class="kpi-delta delta-up">↑ +123,6% vs abr</div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Toques Enlace Externo</span>
+      <div class="kpi-val">256</div>
+      <div class="kpi-delta delta-up">↑ +100% vs abr</div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">% Visualizaciones No Seguidores</span>
+      <div class="kpi-val">35%</div>
+      <div class="kpi-delta delta-up">↑ vs abr 32% (+33%)</div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px;">
+    <h3 class="chart-title" style="font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); margin-bottom:16px; font-family:'Oswald',sans-serif;">Distribución por Tipo de Contenido · Mayo 2026</h3>
+    <div style="background:var(--gris); padding:24px; border-radius:2px;">
+      <div class="progress-item">
+        <div class="progress-top"><span>Publicaciones</span><span>58,0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:58%; background:var(--amber);"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-top"><span>Historias</span><span>24,4%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:24.4%; background:var(--meta);"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-top"><span>Reels</span><span>17,7%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:17.7%; background:var(--seo);"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px; background:var(--gris); padding:24px; border-radius:2px;">
+    <h3 class="chart-title" style="font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); margin-bottom:16px; font-family:'Oswald',sans-serif;">Top 4 Publicaciones · Mayo 2026</h3>
+    <div class="kpi-grid kpi-grid-4">
+      <div class="kpi-card" style="background:rgba(255,255,255,.04);">
+        <span class="kpi-label">9 Mayo</span>
+        <div class="kpi-val" style="font-size:22px; color:var(--amber)">3.900</div>
+        <div class="kpi-sub">Açaí en la dieta — Publicación</div>
+      </div>
+      <div class="kpi-card" style="background:rgba(255,255,255,.04);">
+        <span class="kpi-label">29 Mayo</span>
+        <div class="kpi-val" style="font-size:22px; color:var(--amber)">3.300</div>
+        <div class="kpi-sub">Test Pitaya Blend — Reel</div>
+      </div>
+      <div class="kpi-card" style="background:rgba(255,255,255,.04);">
+        <span class="kpi-label">5 Mayo</span>
+        <div class="kpi-val" style="font-size:22px; color:var(--amber)">2.900</div>
+        <div class="kpi-sub">Ideas para armar tu bowl — Story</div>
+      </div>
+      <div class="kpi-card" style="background:rgba(255,255,255,.04);">
+        <span class="kpi-label">19 Mayo</span>
+        <div class="kpi-val" style="font-size:22px; color:var(--amber)">1.900</div>
+        <div class="kpi-sub">Desayunos Keto con Açaí</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">📱 Análisis de Contenido Orgánico</div>
+    <p>Mayo fue el mejor mes del trimestre en Instagram orgánico: +376 seguidores (el triple que en abril), visitas al perfil multiplicadas x2,2 y toques al enlace externo duplicados. El contenido de tipo educacional/nutricional (Açaí en la dieta, Desayunos Keto) supera en alcance orgánico al contenido de producto puro. El reel "Test Pitaya Blend" (2do lugar con 3.300 views) confirma que los formatos de prueba/review generan fuerte engagement. Publicaciones representan el 58% de las visualizaciones, superando a Reels (17,7%) — inusual para el algoritmo actual, lo que sugiere que la audiencia de Fün es más de consumo estático que de video corto.</p>
+  </div>
+</section>
+
+<!-- ══ 06 · TENDENCIAS HISTÓRICAS ════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">06 · Tendencias Históricas</span></div>
+  <h2 class="section-title">Evolución 8+ Meses</h2>
+  <p class="section-desc">Datos reales de Google Ads (oct 25–may 26), Meta Ads (nov 25–may 26, sin mar 26) y SEO (may 25–may 26).</p>
+
+  <div class="chart-grid">
+    <div class="chart-box">
+      <div class="chart-title">ROAS Google Ads vs Meta Ads</div>
+      <div class="chart-container" style="height:220px;"><canvas id="chartROAS"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Ingresos Totales vs Inversión Consolidada</div>
+      <div class="chart-container" style="height:220px;"><canvas id="chartRevInv"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:16px;">
+    <div class="chart-box">
+      <div class="chart-title">Inversión Google vs Meta (CLP)</div>
+      <div class="chart-container" style="height:220px;"><canvas id="chartInvSplit"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">CPA Histórico Google vs Meta</div>
+      <div class="chart-container" style="height:220px;"><canvas id="chartCPA"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-box" style="margin-top:16px;">
+    <div class="chart-title">Clics Orgánicos SEO — 13 Meses (may 25 → may 26)</div>
+    <div class="chart-container" style="height:180px;"><canvas id="chartSEO2"></canvas></div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">📈 Hallazgos de Tendencias</div>
+    <p>1. Google Ads muestra alta volatilidad en ROAS: picos en noviembre (2.45x) y marzo (3.03x) seguidos de caídas en diciembre y abril. El patrón sugiere dependencia de eventos estacionales (Black Friday en nov, inicio de otoño en mar). 2. Meta Ads tiene dos meses problemáticos: diciembre 2025 (inversión casi nula, $186) y abril 2026 (ROAS 0.03x — probable problema de atribución o campaña sin optimizar). 3. SEO muestra una mejora sostenida de posición (10.6 → 8.5) pero con paradoja CTR en caída (1.95% → 0.92%), indicando que el tráfico informacional crece mientras el transaccional se estanca. 4. La inversión en Meta creció exponencialmente desde febrero 2026, sin un crecimiento proporcional en ROAS — señal de necesidad de optimización creativa.</p>
+  </div>
+</section>
+
+<!-- ══ 07 · ANÁLISIS CREATIVO META ADS ═══════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">07 · Análisis Creativo Meta Ads</span></div>
+  <h2 class="section-title">Performance por Anuncio · Mayo 2026</h2>
+
+  <div class="alert alert-info">
+    <div class="alert-icon">ℹ️</div>
+    <div><div class="alert-title">Separación B2C / B2B en análisis creativo</div><p>Los anuncios de Meta se dividen en dos grupos con objetivos distintos. <strong>B2C</strong> (Ventas permanente + Posicionamiento): objetivo compras, métrica ROAS. <strong>B2B</strong> (Clientes Potenciales B2B): objetivo leads empresariales, métrica CPL. El análisis de ROAS en la tabla aplica solo a B2C — los creativos B2B se analizan en profundidad en la sección 07B.</p></div>
+  </div>
+
+  <div class="alert alert-warning" style="margin-top:8px;">
+    <div class="alert-icon">⚠️</div>
+    <div><div class="alert-title">Nota de Atribución</div><p>Los datos de ROAS por anuncio corresponden a atribución de 7 días clic / 1 día visualización configurada en Meta. El valor real puede diferir de Shopify/GA4. Los valores de conversión del carrito ($2.890.694) superan significativamente los ingresos de compra atribuidos ($1.015.411), sugiriendo alta tasa de abandono de carrito.</p></div>
+  </div>
+
+  <h3 style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--meta);margin:20px 0 12px;">Creativos B2C — Análisis de Ventas</h3>
+
+  <div class="table-wrap" style="margin-top:16px;">
+    <table>
+      <thead><tr><th>Anuncio</th><th>Inversión</th><th>Impr.</th><th>CTR</th><th>Compras</th><th>Ingreso</th><th>CPA</th><th>ROAS</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Video Pitaya sexy</td>
+          <td>$134.453</td>
+          <td>37.930</td>
+          <td>1,64%</td>
+          <td>17</td>
+          <td>$369.274</td>
+          <td>$7.909</td>
+          <td><span class="badge-amber">2.75x</span></td>
+        </tr>
+        <tr>
+          <td>Video pineado del perfil</td>
+          <td>$101.524</td>
+          <td>24.762</td>
+          <td>2,08%</td>
+          <td>13</td>
+          <td>$622.828</td>
+          <td>$7.810</td>
+          <td><span class="badge-green">6.13x ★</span></td>
+        </tr>
+        <tr>
+          <td>Conjunto de gráficas 1</td>
+          <td>$118.383</td>
+          <td>25.782</td>
+          <td>3,14%</td>
+          <td>0</td>
+          <td>$0</td>
+          <td>—</td>
+          <td><span class="badge-red">0.00x</span></td>
+        </tr>
+        <tr>
+          <td>Video B2B Voz en off Cami</td>
+          <td>$94.962</td>
+          <td>42.236</td>
+          <td>2,87%</td>
+          <td>2</td>
+          <td>$7.670</td>
+          <td>$47.481</td>
+          <td><span class="badge-red">0.08x</span></td>
+        </tr>
+        <tr>
+          <td>Mito 1</td>
+          <td>$69.769</td>
+          <td>227.832</td>
+          <td>0,11%</td>
+          <td>2</td>
+          <td>$15.639</td>
+          <td>$34.884</td>
+          <td><span class="badge-red">0.22x</span></td>
+        </tr>
+        <tr>
+          <td>Video Açaí Blend</td>
+          <td>$5.576</td>
+          <td>1.330</td>
+          <td>1,43%</td>
+          <td>0</td>
+          <td>$0</td>
+          <td>—</td>
+          <td><span class="badge-red">0.00x</span></td>
+        </tr>
+        <tr>
+          <td>Catálogo</td>
+          <td>$4.400</td>
+          <td>1.096</td>
+          <td>1,37%</td>
+          <td>0</td>
+          <td>$0</td>
+          <td>—</td>
+          <td><span class="badge-red">0.00x</span></td>
+        </tr>
+        <tr>
+          <td>Mito 2 + Mito 3</td>
+          <td>$8.101</td>
+          <td>29.413</td>
+          <td>0,09%</td>
+          <td>0</td>
+          <td>$0</td>
+          <td>—</td>
+          <td><span class="badge-red">0.00x</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-box" style="margin-top:16px;">
+    <div class="chart-title">ROAS por Anuncio (Solo activos con inversión &gt; $5.000)</div>
+    <div class="chart-container" style="height:200px;"><canvas id="chartROASAds"></canvas></div>
+  </div>
+
+  <div class="kpi-grid kpi-grid-3" style="margin-top:16px;">
+    <div class="kpi-card success">
+      <span class="kpi-label">🏆 Ganador del Mes</span>
+      <div class="kpi-val" style="font-size:16px;">Video Pineado del Perfil</div>
+      <div class="kpi-sub">ROAS 6.13x · $622.828 ingreso · CPA $7.810 · El mejor ratio inversión/retorno del mes.</div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">📈 A Escalar</span>
+      <div class="kpi-val" style="font-size:16px;">Video Pitaya sexy</div>
+      <div class="kpi-sub">ROAS 2.75x con mayor volumen. Si optimiza audiencia, puede mejorar hasta 4x. Mayor inversión recomendada.</div>
+    </div>
+    <div class="kpi-card danger">
+      <span class="kpi-label">🛑 A Pausar</span>
+      <div class="kpi-val" style="font-size:16px;">B2B + Mitos + Gráficas 1</div>
+      <div class="kpi-sub">$282.314 invertidos entre estos tres con ROAS &lt;0.25x. Drenaje de presupuesto activo este mes.</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">🎯 Estrategia Creativa B2C — Conclusión</div>
+    <p>Los formatos ganadores en B2C son video de producto con demostración real (Pitaya sexy, Video pineado). El contenido de marca/educación (Mitos) genera impresiones pero no convierte en ventas directas — aunque puede tener valor como contenido de awareness en el funnel B2C. Nota importante: los creativos B2B ("Conjunto de gráficas", "Video B2B Voz en off Cami") aparecen en esta tabla con ROAS bajo porque su objetivo no son ventas sino leads — no deben evaluarse con esa métrica. Ver análisis completo B2B en sección 07B.</p>
+  </div>
+</section>
+
+<!-- ══ 07B · ANÁLISIS B2B — GENERACIÓN DE LEADS META ═══════════════════ -->
+<section class="section" style="background:#181E2E; border-top:2px solid rgba(123,159,232,.2);">
+  <div class="section-label"><span class="num">07B · Análisis B2B — Generación de Leads</span></div>
+  <h2 class="section-title">Campaña "Clientes Potenciales B2B" · Meta Ads</h2>
+  <p class="section-desc">El canal B2B opera con una lógica distinta al B2C: el objetivo no es generar compras directas, sino capturar leads de negocios (restaurantes, hoteles, cafeterías, distribuidores) para cierre comercial posterior. La métrica principal es el CPL (Costo por Lead), no el ROAS.</p>
+
+  <div class="kpi-grid kpi-grid-4">
+    <div class="kpi-card" style="border-top-color:var(--seo);">
+      <span class="kpi-label">Leads Generados · May 26</span>
+      <div class="kpi-val" style="color:var(--seo);">47</div>
+      <div class="kpi-delta delta-up">↑ vs abr 17 (+176%)</div>
+      <div class="kpi-sub">Mejor mes desde feb 26 (54 leads)</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:var(--seo);">
+      <span class="kpi-label">CPL · May 26</span>
+      <div class="kpi-val" style="color:var(--seo);">$4.539</div>
+      <div class="kpi-delta delta-up">↓ vs abr $12.419 (−63%)</div>
+      <div class="kpi-sub">2do mejor CPL histórico</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:var(--seo);">
+      <span class="kpi-label">Inversión B2B · May 26</span>
+      <div class="kpi-val">$213.345</div>
+      <div class="kpi-delta">34% de la inversión Meta total</div>
+      <div class="kpi-sub">Contactos adicionales: 101</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:var(--seo);">
+      <span class="kpi-label">Contactos Totales</span>
+      <div class="kpi-val">101</div>
+      <div class="kpi-delta">Mensajes + contactos directos</div>
+      <div class="kpi-sub">Distintos a leads formales</div>
+    </div>
+  </div>
+
+  <h3 style="font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--seo); margin:24px 0 12px;">Histórico B2B — Evolución CPL y Leads (4 Meses)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Mes</th><th>Inversión</th><th>Leads</th><th>Contactos</th><th>CPL</th><th>Clics</th><th>Impresiones</th><th>Tendencia</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Ene 2026</td><td>$78.905</td><td>25</td><td>29</td>
+          <td><span class="badge-green">$3.156</span></td><td>361</td><td>28.003</td>
+          <td>Campaña iniciando · CPL óptimo</td>
+        </tr>
+        <tr>
+          <td>Feb 2026</td><td>$279.034</td><td>54</td><td>103</td>
+          <td><span class="badge-amber">$5.167</span></td><td>1.302</td><td>87.171</td>
+          <td>Mayor volumen del período · CPL escala con inversión</td>
+        </tr>
+        <tr>
+          <td>Abr 2026</td><td>$211.131</td><td>17</td><td>168</td>
+          <td><span class="badge-red">$12.419</span></td><td>1.563</td><td>56.612</td>
+          <td>⚠️ Creativos agotados · CPL en máximo histórico</td>
+        </tr>
+        <tr style="background:rgba(123,159,232,.07);">
+          <td><strong>May 2026</strong></td><td><strong>$213.345</strong></td><td><strong>47</strong></td><td><strong>101</strong></td>
+          <td><span class="badge-green"><strong>$4.539</strong></span></td><td><strong>2.024</strong></td><td><strong>68.018</strong></td>
+          <td>✅ Recuperación con nuevo creativo (Video)</td>
+        </tr>
+        <tr style="background:rgba(233,159,47,.04); font-weight:600;">
+          <td>Total acum.</td><td>$782.415</td><td>143</td><td>401</td>
+          <td>$5.471 (prom.)</td><td>5.250</td><td>239.804</td><td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--seo); margin:24px 0 12px;">Performance por Creativo B2B · Mayo 2026</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Creativo</th><th>Plataforma</th><th>Inversión</th><th>Leads</th><th>Contactos</th><th>CPL</th><th>CTR</th><th>Evaluación</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Video B2B Voz en off Cami</td><td>Instagram</td><td>$65.044</td><td>27</td><td>16</td>
+          <td><span class="badge-green">$2.409</span></td><td>2,9%</td>
+          <td><span class="badge-green">★ Mejor CPL del mes</span></td>
+        </tr>
+        <tr>
+          <td>Video B2B Voz en off Cami</td><td>Facebook</td><td>$29.560</td><td>16</td><td>9</td>
+          <td><span class="badge-green">$1.848</span></td><td>3,1%</td>
+          <td><span class="badge-green">★ CPL más bajo del mes</span></td>
+        </tr>
+        <tr>
+          <td>Conjunto de gráficas 1</td><td>Instagram</td><td>$15.877</td><td>4</td><td>8</td>
+          <td><span class="badge-amber">$3.969</span></td><td>2,4%</td>
+          <td><span class="badge-amber">Funciona, menor eficiencia</span></td>
+        </tr>
+        <tr>
+          <td>Conjunto de gráficas 1</td><td>Facebook</td><td>$102.864</td><td>0</td><td>68</td>
+          <td><span class="badge-red">Sin leads</span></td><td>3,7%</td>
+          <td><span class="badge-red">Solo genera contactos/mensajes</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-box" style="margin-top:16px;">
+    <div class="chart-title">Evolución CPL B2B vs Volumen de Leads</div>
+    <div class="chart-container" style="height:200px;"><canvas id="chartB2B"></canvas></div>
+  </div>
+
+  <div class="kpi-grid kpi-grid-2" style="margin-top:16px;">
+    <div class="kpi-card success">
+      <span class="kpi-label">🏆 Creativo ganador B2B</span>
+      <div class="kpi-val" style="font-size:16px;">Video B2B Voz en off Cami</div>
+      <div class="kpi-sub" style="font-size:13px; margin-top:8px; line-height:1.6;">Generó el 91% de los leads del mes (43/47) con CPL de $1.848–$2.409 según plataforma. Supera a las gráficas estáticas tanto en leads como en CPL. Instagram supera a Facebook en volumen; Facebook supera en CPL.</div>
+    </div>
+    <div class="kpi-card danger">
+      <span class="kpi-label">⚠️ Problema sin resolver</span>
+      <div class="kpi-val" style="font-size:16px;">$102.864 en Facebook sin leads</div>
+      <div class="kpi-sub" style="font-size:13px; margin-top:8px; line-height:1.6;">"Conjunto de gráficas 1" en Facebook generó 68 contactos (mensajes directos o clicks al perfil) pero 0 leads formales. Estos contactos podrían ser B2B interesados que no completaron el formulario — oportunidad de seguimiento manual o rediseño del CTA.</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">🏢 Análisis Estratégico B2B — Lo que los datos dicen (y lo que no)</div>
+    <p>La campaña B2B de Meta es en realidad una de las más eficientes del mix cuando se mide correctamente. Un CPL de $4.539 para un cliente B2B que puede generar pedidos recurrentes de $500.000–$2.000.000+ CLP mensuales representa un retorno potencial extraordinario. El problema central no es la campaña — es la trazabilidad post-lead: de los 143 leads acumulados desde enero 2026, no tenemos dato de cuántos se convirtieron en clientes, cuál es el ticket promedio B2B, ni el ciclo de cierre. Sin ese dato, el informe sólo puede evaluar la parte del funnel que Meta mide. <strong>Recomendación urgente: implementar CRM o al menos un pipeline simple (Google Sheets + tracking por lead) para cerrar este gap analítico en junio.</strong> El video "Voz en off Cami" debe escalarse inmediatamente — es el mejor creativo B2B probado hasta la fecha con CPL $1.848–$2.409.</p>
+  </div>
+</section>
+
+<!-- ══ 08 · GOOGLE ADS EN DETALLE ════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">08 · Google Ads en Detalle</span></div>
+  <h2 class="section-title">Análisis por Campaña · Mayo 2026</h2>
+
+  <div class="channel-grid">
+    <div class="channel-card google">
+      <div class="channel-name google">P.Max Gregorio</div>
+      <div class="channel-roas" style="color:var(--google); font-size:42px;">53.37x</div>
+      <div class="channel-roas-label">ROAS Excepcional</div>
+      <div class="channel-metrics">
+        <div class="channel-metric"><span class="label">Inversión</span><span class="val">$3.403</span></div>
+        <div class="channel-metric"><span class="label">Valor conv.</span><span class="val">$181.626</span></div>
+        <div class="channel-metric"><span class="label">Conversiones</span><span class="val">6</span></div>
+        <div class="channel-metric"><span class="label">Tipo</span><span class="val">P.Max</span></div>
+      </div>
+      <div class="insight" style="margin-top:0">
+        <p>ROAS anormalmente alto. Puede deberse a conversiones de alto valor o a atribución de conversiones asistidas. Requiere validación cruzada con GA4/Shopify.</p>
+      </div>
+    </div>
+
+    <div class="channel-card" style="border-top-color:var(--seo);">
+      <div class="channel-name" style="color:var(--seo);">Búsqueda Basal</div>
+      <div class="channel-roas" style="color:var(--seo); font-size:42px;">0.00x</div>
+      <div class="channel-roas-label">Sin Ingreso Directo Atribuido</div>
+      <div class="channel-metrics">
+        <div class="channel-metric"><span class="label">Inversión</span><span class="val">$91.212</span></div>
+        <div class="channel-metric"><span class="label">Valor conv.</span><span class="val">$0</span></div>
+        <div class="channel-metric"><span class="label">Conversiones</span><span class="val">7</span></div>
+        <div class="channel-metric"><span class="label">Tipo</span><span class="val">Búsqueda</span></div>
+      </div>
+      <div class="insight" style="margin-top:0">
+        <p>7 conversiones reportadas pero $0 valor atribuido — probable configuración de objetivo sin valor de conversión. Revisar si las conversiones son leads, no compras.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-warning" style="margin-top:16px;">
+    <div class="alert-icon">⚠️</div>
+    <div><div class="alert-title">Revisión urgente de configuración</div><p>Campañas "Pitaya y Sweet nibs", "Consideración de marca - permanente", "P Max antigua", "preparacion de acai bowl marzo 2025 #2" y "Permanente Fun" aparecen en el CSV con estado Detenida o $0 de gasto. Confirmar que no hay presupuesto activo asignado a campañas obsoletas.</p></div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">🔎 Oportunidad Google Ads</div>
+    <p>P.Max Gregorio con $3.403 generó $181.626 (53x ROAS). Si este rendimiento es real y sostenible, incrementar el presupuesto diario de esta campaña de ~$110 a $500-800 podría multiplicar los ingresos directos de Google. Búsqueda Basal necesita configuración de valores de conversión para medir su verdadero impacto en el funnel.</p>
+  </div>
+</section>
+
+<!-- ══ 09 · EMBUDO DE CONVERSIÓN ═════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">09 · Embudo de Conversión</span></div>
+  <h2 class="section-title">Análisis de Funnel · Mayo 2026</h2>
+
+  <div class="channel-grid">
+    <div>
+      <h3 style="font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--meta); margin-bottom:16px;">Embudo Meta Ads</h3>
+      <div class="funnel">
+        <div class="funnel-step">
+          <div class="funnel-label">Alcance</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:100%">158.447</div>
+          </div>
+          <div class="funnel-pct">100%</div>
+        </div>
+        <div class="funnel-arrow">▼ 246%</div>
+        <div class="funnel-step">
+          <div class="funnel-label">Impresiones</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:100%; background:linear-gradient(90deg,var(--meta),rgba(91,191,138,.3))">390.454</div>
+          </div>
+          <div class="funnel-pct">frec 2.46</div>
+        </div>
+        <div class="funnel-arrow">▼ 0,89%</div>
+        <div class="funnel-step">
+          <div class="funnel-label">Clics en enlace</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:70%; background:linear-gradient(90deg,var(--amber),rgba(233,159,47,.3))">3.475</div>
+          </div>
+          <div class="funnel-pct">0,89%</div>
+        </div>
+        <div class="funnel-arrow">▼ 7,28%</div>
+        <div class="funnel-step">
+          <div class="funnel-label">Carrito añadido</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:28%; background:linear-gradient(90deg,#7B9FE8,rgba(123,159,232,.3))">253</div>
+          </div>
+          <div class="funnel-pct">7,28%</div>
+        </div>
+        <div class="funnel-arrow">▼ 13,44%</div>
+        <div class="funnel-step">
+          <div class="funnel-label">Compras</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:10%; background:linear-gradient(90deg,#4CAF50,rgba(76,175,80,.3))">34</div>
+          </div>
+          <div class="funnel-pct">13,44%</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--google); margin-bottom:16px;">Embudo Google Ads</h3>
+      <div class="funnel">
+        <div class="funnel-step">
+          <div class="funnel-label">Impresiones</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:100%">11.718</div>
+          </div>
+          <div class="funnel-pct">100%</div>
+        </div>
+        <div class="funnel-arrow">▼ 6,04%</div>
+        <div class="funnel-step">
+          <div class="funnel-label">Clics</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:70%; background:linear-gradient(90deg,var(--google),rgba(233,159,47,.3))">708</div>
+          </div>
+          <div class="funnel-pct">6,04%</div>
+        </div>
+        <div class="funnel-arrow">▼ 1,84%</div>
+        <div class="funnel-step">
+          <div class="funnel-label">Conversiones</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:25%; background:linear-gradient(90deg,#4CAF50,rgba(76,175,80,.3))">13</div>
+          </div>
+          <div class="funnel-pct">1,84%</div>
+        </div>
+        <div class="funnel-arrow">▼ —</div>
+        <div class="funnel-step">
+          <div class="funnel-label">Valor/Conv.</div>
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar" style="width:15%; background:linear-gradient(90deg,var(--meta),rgba(91,191,138,.3))">$13.971</div>
+          </div>
+          <div class="funnel-pct">prom.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">🔻 Dónde Se Pierde la Audiencia</div>
+    <p>Meta: la mayor pérdida ocurre entre carrito añadido (253) y compra (34) — solo 13,44% de quienes agregan al carrito completan la compra. Esto señala un problema de abandono de checkout: revisar la experiencia de pago, ofrecer opciones de pago en cuotas y activar recuperación de carrito abandonado vía email/WhatsApp. En Google: la tasa de conversión de 1.84% sobre clics es razonablemente buena para e-commerce de nicho, pero el valor promedio por conversión ($13.971) sugiere productos de ticket medio.</p>
+  </div>
+</section>
+
+<!-- ══ 10 · SINERGIAS PAID + ORGÁNICO ════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">10 · Sinergias Paid + Orgánico</span></div>
+  <h2 class="section-title">Análisis Integrado de Canales</h2>
+
+  <div class="kpi-grid kpi-grid-2" style="margin-bottom:24px;">
+    <div class="kpi-card seo">
+      <span class="kpi-label">Oportunidad SEO ↔ Google Ads</span>
+      <div class="kpi-val" style="font-size:18px;">Keywords Redundantes</div>
+      <div class="kpi-sub" style="margin-top:8px; font-size:13px; line-height:1.6;">"acai fruta" (pos. SEO 5.4, 34 clics) + "pitaya chile" (pos. 6.2, 6 clics) ya ranquean bien orgánicamente. Reducir puja pagada en estas keywords y redirigir presupuesto a términos donde la posición orgánica es &gt;15 como "acai por mayor" y "acai congelado comprar".</div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Oportunidad IG → Meta Retargeting</span>
+      <div class="kpi-val" style="font-size:18px;">Audiencia Caliente</div>
+      <div class="kpi-sub" style="margin-top:8px; font-size:13px; line-height:1.6;">23.000 visualizaciones orgánicas en mayo = audiencia caliente para retargeting. Crear segmento en Meta de personas que interactuaron con contenido orgánico (especialmente "Açaí en la dieta" 3.9K y "Test Pitaya Blend" 3.3K) y exponerlos al "Video pineado del perfil" (ROAS 6.13x) debería mejorar el ROAS del canal.</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid kpi-grid-2">
+    <div class="kpi-card">
+      <span class="kpi-label">Páginas Orgánicas con Alto Tráfico</span>
+      <div class="kpi-val" style="font-size:18px;">Impulsar con Pauta</div>
+      <div class="kpi-sub" style="margin-top:8px; font-size:13px; line-height:1.6;">/producto/pulpa-de-acai/ (196 clics SEO, posición 8.6) y /producto/pulpa-de-pitaya/ (82 clics, pos. 8.4) son las páginas con más tráfico orgánico. Si su tasa de conversión es baja, impulsarlas con pauta de performance es más eficiente que crearlas de cero para paid.</div>
+    </div>
+    <div class="kpi-card success">
+      <span class="kpi-label">Contenido a Impulsar con Pauta</span>
+      <div class="kpi-val" style="font-size:18px;">Publicación 9 Mayo</div>
+      <div class="kpi-sub" style="margin-top:8px; font-size:13px; line-height:1.6;">"Açaí en la dieta" (3.900 views orgánicos, el mejor del mes) es candidata directa a impulso pagado. Este tipo de contenido educacional con comparativa calórica tiene alta probabilidad de resonar con audiencias frías de meta.</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">🔗 Estrategia de Contenido Integrado Paid + Orgánico</div>
+    <p>La sinergia más poderosa disponible ahora mismo: usar el contenido orgánico que ya demostró tracción (las publicaciones top de Instagram) como creativos en Meta Ads, y construir audiencias de retargeting desde los videos vistos orgánicamente. Esto reduce el costo de producción creativa y aprovecha la prueba social ya validada. En SEO, el trabajo pendiente es diferente: las keywords de alta intención transaccional (acai congelado, acai sin azúcar, acai por mayor) tienen CERO presencia en pauta de Google — coordinar contenido SEO + Google Ads en estas keywords específicas maximizaría el ownership de las SERPs más valiosas.</p>
+  </div>
+</section>
+
+<!-- ══ 11 · ALERTAS Y DIAGNÓSTICO ════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">11 · Alertas y Diagnóstico</span></div>
+  <h2 class="section-title">Semáforo del Mes</h2>
+
+  <div class="alert alert-info">
+    <div class="alert-icon">💡</div>
+    <div><div class="alert-title">CONTEXTO — Campaña B2B Meta: bien en leads, ciega en cierre</div><p>La campaña B2B generó 47 leads a CPL $4.539 — una recuperación sólida. El problema no es la campaña sino la trazabilidad post-lead. De los 143 leads acumulados desde enero, no hay dato de cuántos cerraron ni cuánto facturó cada cliente. Sin CRM o pipeline, el ROI real B2B es desconocido. Esto no es un problema de medios; es un gap operativo comercial.</p></div>
+  </div>
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div><div class="alert-title">CRÍTICO — Sin trazabilidad de conversión de leads B2B a clientes</div><p>$782.415 invertidos en B2B Meta desde enero generaron 143 leads. Sin un CRM o registro de seguimiento, es imposible saber cuántos cerraron, cuál es el ticket promedio B2B ni el LTV del cliente empresa. Implementar pipeline de seguimiento es la acción de mayor impacto estratégico disponible ahora mismo.</p></div>
+  </div>
+  <div class="alert alert-danger">
+    <div class="alert-icon">🔴</div>
+    <div><div class="alert-title">CRÍTICO — ROAS consolidado bajo umbral de rentabilidad</div><p>ROAS global 1.89x. Con un margen bruto estándar de e-commerce del 40–50%, el ROAS mínimo para ser rentable es 2x–2.5x. El mes cierra en pérdida operativa en paid media.</p></div>
+  </div>
+  <div class="alert alert-warning">
+    <div class="alert-icon">⚠️</div>
+    <div><div class="alert-title">ADVERTENCIA — CTR SEO en caída sistemática</div><p>CTR cayó de 1.95% (may 25) a 0.92% (may 26), −52.8% interanual. Las impresiones crecen pero los clics no. Probable impacto de AI Overviews en búsquedas informacionales. Requiere estrategia de contenido transaccional.</p></div>
+  </div>
+  <div class="alert alert-warning">
+    <div class="alert-icon">⚠️</div>
+    <div><div class="alert-title">ADVERTENCIA — Abandono de carrito elevado en Meta</div><p>253 artículos añadidos al carrito vs 34 compras = tasa de completación 13.4%. Industria e-commerce promedio: 25–35%. Recuperar el 50% del abandono equivale a 43 compras adicionales sin invertir más en pauta.</p></div>
+  </div>
+  <div class="alert alert-warning">
+    <div class="alert-icon">⚠️</div>
+    <div><div class="alert-title">ADVERTENCIA — Google Ads: ausencia de valores de conversión en Búsqueda</div><p>Búsqueda Basal registra 7 conversiones con $0 en valor de conversión. Sin este dato, es imposible calcular el ROI real de la campaña de mayor inversión en Google ($91.212).</p></div>
+  </div>
+  <div class="alert alert-success">
+    <div class="alert-icon">✅</div>
+    <div><div class="alert-title">POSITIVO — Video pineado del perfil: ROAS excepcional</div><p>ROAS 6.13x con $101.524 invertidos y $622.828 en ingresos. CPA de $7.810. Es el mejor creativo del mes y debe escalarse con mayor presupuesto en junio.</p></div>
+  </div>
+  <div class="alert alert-success">
+    <div class="alert-icon">✅</div>
+    <div><div class="alert-title">POSITIVO — Instagram orgánico: mejor mes del trimestre</div><p>+376 seguidores, +124% visitas al perfil, +100% toques al link. Las publicaciones educacionales sobre acaí y keto son el formato con mejor performance.</p></div>
+  </div>
+  <div class="alert alert-info">
+    <div class="alert-icon">💡</div>
+    <div><div class="alert-title">OPORTUNIDAD — P.Max Gregorio con ROAS 53x sin escalar</div><p>Si el dato es fidedigno, esta campaña tiene margen para multiplicar su presupuesto. Validar contra Shopify y escalar de $3.403 a $30.000–50.000 mensuales si se confirma.</p></div>
+  </div>
+</section>
+
+<!-- ══ 12 · INTELIGENCIA DE AUDIENCIAS ══════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">12 · Inteligencia de Audiencias y Contenido</span></div>
+  <h2 class="section-title">Patrones del Consumidor Fün</h2>
+
+  <div class="kpi-grid kpi-grid-3">
+    <div class="kpi-card">
+      <span class="kpi-label">Formato Ganador (Orgánico B2C)</span>
+      <div class="kpi-val" style="font-size:18px;">Publicación Educacional</div>
+      <div class="kpi-sub" style="font-size:13px; margin-top:8px; line-height:1.6;">Comparativas calóricas, recetas keto, propiedades del açaí y pitaya superan a contenido de producto puro en alcance orgánico. La audiencia B2C de Fün es curiosa y busca aprender antes de comprar.</div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Formato Ganador (Paid B2C)</span>
+      <div class="kpi-val" style="font-size:18px;">Video de Producto Real</div>
+      <div class="kpi-sub" style="font-size:13px; margin-top:8px; line-height:1.6;">Video Pitaya sexy (ROAS 2.75x) y Video pineado del perfil (6.13x) dominan. El video auténtico/ugc-style convierte mejor que producción gráfica pulida en B2C.</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:var(--seo);">
+      <span class="kpi-label">Formato Ganador (Paid B2B)</span>
+      <div class="kpi-val" style="font-size:18px;">Video con Voz en Off</div>
+      <div class="kpi-sub" style="font-size:13px; margin-top:8px; line-height:1.6;">"Video B2B Voz en off Cami" generó el 91% de los leads B2B del mes con CPL $1.848–$2.409. Supera ampliamente al formato de gráficas estáticas para decisores de negocios.</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid kpi-grid-2" style="margin-top:16px;">
+    <div class="kpi-card">
+      <span class="kpi-label">Perfil de la Audiencia B2C</span>
+      <div class="kpi-val" style="font-size:16px;">Consumidor Health-Conscious</div>
+      <div class="kpi-sub" style="font-size:13px; margin-top:8px; line-height:1.6;">Interesado en biohacking, nutrición funcional y dietas específicas (keto, sin azúcar). Responde a contenido educacional antes de comprar. Ciclo de conversión más largo que e-commerce tradicional.</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:var(--seo);">
+      <span class="kpi-label">Perfil de la Audiencia B2B</span>
+      <div class="kpi-val" style="font-size:16px;">Decisor Gastronómico/Retail</div>
+      <div class="kpi-sub" style="font-size:13px; margin-top:8px; line-height:1.6;">Restaurantes, cafeterías, hoteles y distribuidores. Responde a video con propuesta comercial directa. Facebook genera más "contactos" (posible exploración), Instagram genera leads más calificados con mejor CPL.</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">📊 Estacionalidad Identificada</div>
+    <p>Los datos históricos revelan un patrón claro: noviembre (Black Friday) es el mes de mayor rendimiento en Google Ads (ROAS 2.45x, 186 conversiones). Marzo muestra un pico secundario (ROAS 3.03x) que podría estar relacionado con el regreso a clases / inicio de otoño y reactivación de hábitos saludables. Abril y mayo muestran caída post-verano. La estrategia para junio debe adelantar preparación para el segundo semestre: julio–agosto pueden ser meses de mayor demanda orgánica (inicio de temporada de batidos/bowls en invierno chileno).</p>
+  </div>
+</section>
+
+<!-- ══ 13 · PLAN DE ACCIÓN ═══════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">13 · Plan de Acción</span></div>
+  <h2 class="section-title">Próximas Acciones — Junio 2026</h2>
+
+  <div class="action-grid">
+    <div class="action-card urgente">
+      <div class="action-priority" style="color:var(--rojo);">🔴 Urgente — Esta semana</div>
+      <div class="action-title">Implementar pipeline de seguimiento B2B</div>
+      <div class="action-desc">Con 143 leads acumulados desde enero y sin registro de cierre, el ROI real B2B es invisible. Acción mínima viable: crear un Google Sheet compartido con el equipo comercial con columnas: Lead, Fecha, Fuente, Empresa, Estado (contactado / reunión / propuesta / cerrado / perdido), Ticket. Actualizar semanalmente. Con ese dato, junio podrá reportar ingresos B2B reales, no solo leads.</div>
+      <div class="action-impact" style="color:var(--rojo);">Impacto: cierra el mayor gap analítico del negocio</div>
+    </div>
+
+    <div class="action-card urgente">
+      <div class="action-priority" style="color:var(--rojo);">🔴 Urgente — Esta semana</div>
+      <div class="action-title">Validar P.Max Gregorio en Google (ROAS 53x)</div>
+      <div class="action-desc">Cruzar el dato de $181.626 en valor de conversión contra Shopify para el período del mes. Si se confirma, aumentar presupuesto diario de ~$110 a $500 inmediatamente. Si es error de atribución, revisar configuración de conversiones en Google Ads para evitar doble conteo.</div>
+      <div class="action-impact" style="color:var(--rojo);">Impacto: potencial 5x en ingresos Google</div>
+    </div>
+
+    <div class="action-card alta">
+      <div class="action-priority" style="color:var(--amber);">🟡 Alta prioridad — Junio</div>
+      <div class="action-title">Escalar "Video B2B Voz en off Cami" en Meta</div>
+      <div class="action-desc">Este creativo generó el 91% de los leads B2B del mes con CPL de $1.848 (Facebook) y $2.409 (Instagram) — los mejores resultados B2B desde que comenzó la campaña. Acciones: 1) Aumentar presupuesto de $95K a $150K en este creativo. 2) Crear 2 variantes del mismo concepto (diferente apertura de video, diferente copy). 3) Testear audiencias de Lookalike basadas en los leads ya convertidos a cliente.</div>
+      <div class="action-impact" style="color:var(--amber);">Meta: 80+ leads B2B en junio a CPL &lt;$4.000</div>
+    </div>
+      <div class="action-desc">Este creativo tiene ROAS 6.13x con $101.524 invertidos. Duplicar el presupuesto a $200.000 y testear con nuevas audiencias lookalike basadas en compradores. Crear variantes A/B del mismo concepto con diferentes hooks de apertura para evitar fatiga creativa.</div>
+      <div class="action-impact" style="color:var(--amber);">Impacto estimado: +$600.000 en ingresos</div>
+    </div>
+
+    <div class="action-card alta">
+      <div class="action-priority" style="color:var(--amber);">🟡 Alta prioridad — Junio</div>
+      <div class="action-title">Activar recuperación de carrito abandonado</div>
+      <div class="action-desc">253 carritos vs 34 compras = 87% de abandono. Implementar: 1) Email automático a 1h, 6h y 24h post-abandono. 2) Audiencia de retargeting en Meta específica para "carrito abandonado" con oferta de envío gratis o descuento del 10%. Solo recuperar el 20% de los abandonados = 44 ventas extra/mes.</div>
+      <div class="action-impact" style="color:var(--amber);">Impacto: +40% conversiones sin costo adicional</div>
+    </div>
+
+    <div class="action-card alta">
+      <div class="action-priority" style="color:var(--amber);">🟡 Alta prioridad — Junio</div>
+      <div class="action-title">Optimizar CTR SEO en keywords informacionales</div>
+      <div class="action-desc">Reescribir los title tags y meta descriptions de /pulpa-de-acai/ y /pulpa-de-pitaya/ (las dos páginas con más impresiones). Incorporar propuesta de valor clara: "Pulpa de Açaí 100% Natural · Envío a Chile · Compra online". El CTR actual de 0.9% vs benchmark de 2.5-3% implica que hay triple potencial de clics sin cambiar posición.</div>
+      <div class="action-impact" style="color:var(--amber);">Impacto: potencial +200% clics orgánicos</div>
+    </div>
+
+    <div class="action-card media">
+      <div class="action-priority" style="color:var(--seo);">🔵 Media prioridad — Mediano plazo</div>
+      <div class="action-title">Crear contenido SEO transaccional</div>
+      <div class="action-desc">Desarrollar landing pages o posts optimizados para: "acai congelado Chile", "comprar pitaya online", "acai por mayor Santiago". Estas keywords muestran CTRs de 5–25% cuando el usuario llega, pero el volumen de búsqueda es aún bajo. Capturarlas ahora posiciona a Fün para cuando la demanda escale.</div>
+      <div class="action-impact" style="color:var(--seo);">Impacto: +30% tráfico orgánico Q3 2026</div>
+    </div>
+
+    <div class="action-card media">
+      <div class="action-priority" style="color:var(--seo);">🔵 Media prioridad — Mediano plazo</div>
+      <div class="action-title">Configurar valores de conversión en Google Búsqueda</div>
+      <div class="action-desc">Búsqueda Basal registra 7 conversiones con $0 valor. Sin el ticket promedio asignado a cada conversión, Google no puede optimizar las pujas por valor. Agregar valor de conversión dinámico conectado al checkout o usar valor estático basado en ticket promedio ($13.000–15.000 CLP).</div>
+      <div class="action-impact" style="color:var(--seo);">Impacto: optimización automática de pujas</div>
+    </div>
+
+    <div class="action-card oportunidad">
+      <div class="action-priority" style="color:var(--meta);">🟢 Oportunidad — Test a considerar</div>
+      <div class="action-title">Test: contenido orgánico top → creativo paid</div>
+      <div class="action-desc">Tomar "Açaí en la dieta" (3.900 views orgánicos) y usarlo como creativo en Meta Ads con $50.000 de presupuesto test. Si el CTR orgánico se traslada a paid, este tipo de contenido educacional puede ser el nuevo formato de mayor eficiencia. Comparar ROAS vs videos de producto en el mismo período.</div>
+      <div class="action-impact" style="color:var(--meta);">Hipótesis: ROAS 3x+ por prueba social</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 14 · PROYECCIÓN JUNIO 2026 ════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label"><span class="num">14 · Proyección Mes Siguiente</span></div>
+  <h2 class="section-title">Escenarios Junio 2026</h2>
+  <p class="section-desc">Proyecciones basadas en tendencias históricas y acciones del plan anterior. Junio es inicio de invierno en Chile — menor demanda de batidos/bowls fríos pero mayor interés en superalimentos para inmunidad y energía.</p>
+
+  <div class="proj-grid">
+    <div class="proj-card" style="border-top:3px solid #4CAF50;">
+      <div class="proj-title" style="color:#4CAF50;">Escenario Optimista</div>
+      <div class="proj-sub">Con pipeline B2B activo, escala video pineado B2C, recuperación carrito y escala Video B2B</div>
+      <div class="proj-metrics">
+        <div class="proj-metric"><span class="label">Inversión proyectada</span><span class="val">$550.000</span></div>
+        <div class="proj-metric"><span class="label">ROAS B2C esperado</span><span class="val" style="color:#4CAF50;">3.0–3.5x</span></div>
+        <div class="proj-metric"><span class="label">Ingresos B2C proyectados</span><span class="val">$1.500.000–1.750.000</span></div>
+        <div class="proj-metric"><span class="label">Leads B2B proyectados</span><span class="val" style="color:var(--seo);">70–90 leads</span></div>
+        <div class="proj-metric"><span class="label">CPL B2B esperado</span><span class="val" style="color:var(--seo);">&lt;$3.500</span></div>
+        <div class="proj-metric"><span class="label">Supuesto clave</span><span class="val" style="font-size:14px;">P.Max validado + Video B2B escalado + CRM activo</span></div>
+      </div>
+    </div>
+
+    <div class="proj-card" style="border-top:3px solid var(--amber);">
+      <div class="proj-title" style="color:var(--amber);">Escenario Conservador</div>
+      <div class="proj-sub">Sin cambios estructurales, continuidad de mayo con ajuste estacional</div>
+      <div class="proj-metrics">
+        <div class="proj-metric"><span class="label">Inversión proyectada</span><span class="val">$580.000</span></div>
+        <div class="proj-metric"><span class="label">ROAS B2C esperado</span><span class="val" style="color:var(--amber);">1.5–2.0x</span></div>
+        <div class="proj-metric"><span class="label">Ingresos B2C proyectados</span><span class="val">$870.000–1.160.000</span></div>
+        <div class="proj-metric"><span class="label">Leads B2B proyectados</span><span class="val" style="color:var(--seo);">40–50 leads</span></div>
+        <div class="proj-metric"><span class="label">CPL B2B esperado</span><span class="val" style="color:var(--seo);">$4.000–$5.500</span></div>
+        <div class="proj-metric"><span class="label">Riesgo principal</span><span class="val" style="font-size:14px;">Estacionalidad invierno + fatiga creativa B2C</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight" style="margin-top:24px;">
+    <div class="insight-title">📅 Contexto Estacional Junio 2026</div>
+    <p>Junio marca el inicio del invierno en Chile (temporada baja para productos de bowls y batidos fríos). Sin embargo, es también el mes del Día del Padre (15 junio), que puede generar picos de compra en packs regalo. La estrategia recomendada es activar campañas de Día del Padre con foco en kits de regalo de açaí/pitaya (producto experiencial), aprovechar la demanda de productos de bienestar invernal (antioxidantes, energía para el frío) y mantener contenido orgánico educacional enfocado en "por qué consumir superalimentos en invierno".</p>
+  </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════════════════ -->
+<footer>
+  <div>
+    <div class="logo">La Ola Studio</div>
+    <div class="meta">Informe de Performance · Fün Superfoods · Mayo 2026</div>
+  </div>
+  <div class="meta" style="text-align:right;">
+    Elaborado el 3 de junio de 2026<br>
+    Versión 1.0 · Datos reales de Google Ads, Meta Ads, Search Console e Instagram
+  </div>
+</footer>
+
+<script>
+Chart.defaults.color = '#9A9A9A';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+const GOOGLE = '#E99F2F', META = '#5BBF8A', SEO = '#7B9FE8', RED = '#B9352E';
+
+// Months labels - Google Ads available: oct25-may26; Meta: nov25-may26; SEO: may25-may26
+const labelsGA  = ['Oct 25','Nov 25','Dic 25','Ene 26','Feb 26','Mar 26','Abr 26','May 26'];
+const roasGA    = [0.40, 2.45, 1.97, 2.11, 1.74, 3.03, 0.69, 1.92];
+const roasMeta  = [null, 7.86, null, 1.16, 4.42, null, 0.03, 1.89]; // null where no data (oct,dic,mar)
+const invGA     = [174242,291520,303097,137128,95731,91358,93716,94615];
+const invMeta   = [0,32405,186,101398,348988,0,285946,537168];
+const valGA     = [69818,715484,596400,288847,166718,276545,64803,181626];
+const valMeta   = [0,254857,76123,117527,1541278,0,8036,1015411];
+const cpaGA     = [8712,3135,14372,4285,5983,10151,15619,7278];
+const cpaMeta   = [null,2946,null,16900,19388,null,47658,15799];
+
+const labelsSEO = ['May 25','Jun 25','Jul 25','Ago 25','Sep 25','Oct 25','Nov 25','Dic 25','Ene 26','Feb 26','Mar 26','Abr 26','May 26'];
+const clicsSEO  = [680,749,933,856,823,915,738,665,864,875,675,403,412];
+const imprSEO   = [34957,42540,57722,56393,62993,62246,66439,64713,89689,81365,61461,47280,44553];
+
+function makeChart(id, type, labels, datasets, opts={}) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  new Chart(ctx, {
+    type, data: {labels, datasets},
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position:'top', labels:{boxWidth:10, font:{size:11}} } },
+      scales: type!=='pie' ? {
+        x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{font:{size:10}} },
+        y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{font:{size:10}}, ...opts.yOpts }
+      } : {},
+      ...opts.extra
+    }
+  });
+}
+
+// Chart ROAS
+makeChart('chartROAS','line', labelsGA, [
+  { label:'ROAS Google Ads', data:roasGA, borderColor:GOOGLE, backgroundColor:'rgba(233,159,47,.1)', fill:true, tension:.4, pointRadius:4, pointBackgroundColor:labelsGA.map((_,i)=>i===7?GOOGLE:'rgba(0,0,0,0)'), pointRadius:labelsGA.map((_,i)=>i===7?7:3) },
+  { label:'ROAS Meta Ads', data:roasMeta, borderColor:META, backgroundColor:'rgba(91,191,138,.08)', fill:true, tension:.4, spanGaps:false, pointRadius:3 }
+], { yOpts:{ title:{display:true, text:'ROAS (x)'} } });
+
+// Chart Rev vs Inv
+makeChart('chartRevInv','bar', labelsGA, [
+  { label:'Inversión Total', data:labelsGA.map((_,i)=>invGA[i]+invMeta[i]), backgroundColor:'rgba(123,159,232,0.5)', yAxisID:'y' },
+  { label:'Ingresos Atrib.', data:labelsGA.map((_,i)=>valGA[i]+valMeta[i]), backgroundColor:'rgba(233,159,47,0.5)', yAxisID:'y' },
+], { yOpts:{ ticks:{ callback:v=>v>=1000000?'$'+(v/1000000).toFixed(1)+'M':'$'+(v/1000).toFixed(0)+'K' } } });
+
+// Chart Inv split
+makeChart('chartInvSplit','bar', labelsGA, [
+  { label:'Google Ads', data:invGA, backgroundColor:GOOGLE+'99', stack:'s' },
+  { label:'Meta Ads', data:invMeta, backgroundColor:META+'99', stack:'s' },
+], { yOpts:{ stacked:true, ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'K'} }, extra:{scales:{x:{stacked:true},y:{stacked:true}}} });
+
+// Chart CPA
+makeChart('chartCPA','line', labelsGA, [
+  { label:'CPA Google', data:cpaGA, borderColor:GOOGLE, tension:.4, pointRadius:3 },
+  { label:'CPA Meta', data:cpaMeta, borderColor:META, tension:.4, spanGaps:false, pointRadius:3 }
+], { yOpts:{ ticks:{callback:v=>'$'+(v/1000).toFixed(1)+'K'} } });
+
+// SEO charts
+const seoData = { labels:labelsSEO, datasets:[
+  { label:'Clics Orgánicos', data:clicsSEO, borderColor:SEO, backgroundColor:'rgba(123,159,232,.15)', fill:true, tension:.4,
+    pointRadius:labelsSEO.map((_,i)=>i===12?8:3), pointBackgroundColor:labelsSEO.map((_,i)=>i===12?SEO:'rgba(123,159,232,.5)') }
+]};
+['chartSEO','chartSEO2'].forEach(id => {
+  const ctx = document.getElementById(id); if(!ctx)return;
+  new Chart(ctx, { type:'line', data:seoData, options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{labels:{font:{size:11}}}},
+    scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{font:{size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{font:{size:10}}}}
+  }});
+});
+
+// B2B Chart
+const ctxB2B = document.getElementById('chartB2B');
+if(ctxB2B) new Chart(ctxB2B, {
+  type: 'bar',
+  data: {
+    labels: ['Ene 2026', 'Feb 2026', 'Abr 2026', 'May 2026'],
+    datasets: [
+      { label: 'Leads B2B', data: [25, 54, 17, 47], backgroundColor: 'rgba(123,159,232,0.6)', yAxisID: 'y' },
+      { label: 'CPL (CLP)', data: [3156, 5167, 12419, 4539], type: 'line', borderColor: '#E99F2F', backgroundColor: 'transparent', yAxisID: 'y2', tension: 0.4, pointRadius: 5, pointBackgroundColor: '#E99F2F' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: { size: 11 } } } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 11 } }, title: { display: true, text: 'Leads', color: '#7B9FE8' }, position: 'left' },
+      y2: { grid: { display: false }, ticks: { font: { size: 11 }, callback: v => '$' + (v/1000).toFixed(1) + 'K' }, title: { display: true, text: 'CPL', color: '#E99F2F' }, position: 'right' }
+    }
+  }
+});
+const adLabels = ['Video Pineado\ndel Perfil','Video Pitaya\nsexy','Video B2B\nVoz Cami','Mito 1','Gráficas 1'];
+const adROAS   = [6.13, 2.75, 0.08, 0.22, 0.00];
+const adColors = adROAS.map(v => v>=6?'rgba(76,175,80,0.7)' : v>=3?'rgba(233,159,47,0.7)' : 'rgba(185,53,46,0.7)');
+const ctx8 = document.getElementById('chartROASAds');
+if(ctx8) new Chart(ctx8, { type:'bar', data:{
+  labels:adLabels,
+  datasets:[{ label:'ROAS', data:adROAS, backgroundColor:adColors, borderColor:adColors.map(c=>c.replace('0.7','1')), borderWidth:1 }]
+}, options:{
+  indexAxis:'y', responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false}, annotation:{annotations:{line1:{type:'line',xMin:3,xMax:3,borderColor:META,borderWidth:1,borderDash:[4,4]}}}},
+  scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{font:{size:11},callback:v=>v+'x'}},y:{grid:{display:false},ticks:{font:{size:11}}}}
+}});
+</script>
+</body>
+</html>
