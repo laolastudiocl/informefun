@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Junio 2026 · Fün Superfoods · La Ola Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --azul: #2E3B74; --amber: #E99F2F; --verde: #256A46;
+    --rojo: #B9352E; --negro: #1A1A1A; --gris: #2A2A2A;
+    --gris2: #3D3D3D; --white: #F0EDE8; --muted: #9A9A9A;
+    --green: #5BBF8A; --blue: #7B9FE8;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--negro); color:var(--white); font-family:'Pathway Gothic One',sans-serif; font-size:16px; line-height:1.5; }
+  h1,h2,h3,.val { font-family:'Oswald',sans-serif; }
+
+  /* HERO */
+  .hero { background:var(--azul); border-bottom:4px solid var(--amber); padding:52px 48px 44px; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-60px; right:-60px; width:360px; height:360px; border-radius:50%; background:rgba(233,159,47,.05); }
+  .badge { display:inline-block; background:rgba(233,159,47,.15); border:1px solid var(--amber); color:var(--amber); font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; padding:5px 14px; border-radius:2px; margin-bottom:14px; animation:pulse 3s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
+  .hero-period { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:rgba(233,159,47,.75); margin-bottom:6px; }
+  .hero h1 { font-size:clamp(28px,5vw,54px); font-weight:700; text-transform:uppercase; line-height:1; margin-bottom:6px; }
+  .hero-sub { color:rgba(240,237,232,.55); font-size:14px; margin-bottom:36px; }
+  .hero-kpis { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:rgba(233,159,47,.2); border:1px solid rgba(233,159,47,.2); }
+  .hero-kpi { background:rgba(24,30,53,.75); padding:16px 12px; text-align:center; }
+  .hero-kpi .lbl { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); opacity:.8; display:block; margin-bottom:5px; }
+  .hero-kpi .val { font-family:'Oswald',sans-serif; font-size:20px; font-weight:700; }
+  .hero-kpi .val.green { color:var(--green); }
+
+  /* LAYOUT */
+  .section { padding:48px; }
+  .section:nth-child(odd) { background:#181E35; }
+  .section:nth-child(even) { background:#1E2A1E; }
+  .sec-label { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+  .sec-label::before { content:''; display:block; width:3px; height:18px; background:var(--amber); }
+  .sec-label span { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--amber); }
+  .sec-title { font-size:clamp(20px,2.5vw,28px); font-weight:700; text-transform:uppercase; margin-bottom:24px; }
+
+  /* KPI CARDS */
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:14px; margin-bottom:28px; }
+  .kpi { background:var(--gris2); border-top:3px solid var(--amber); padding:18px; border-radius:2px; }
+  .kpi.green { border-top-color:var(--green); }
+  .kpi.red   { border-top-color:var(--rojo); }
+  .kpi .lbl  { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:7px; }
+  .kpi .val  { font-family:'Oswald',sans-serif; font-size:26px; font-weight:700; line-height:1; }
+  .kpi .val.green { color:var(--green); }
+  .kpi .sub  { font-size:11px; color:var(--muted); margin-top:4px; }
+
+  /* INSIGHT */
+  .insight { background:rgba(46,59,116,.4); border-left:4px solid var(--amber); padding:18px 22px; margin:20px 0; border-radius:0 2px 2px 0; }
+  .insight.good { background:rgba(37,106,70,.25); border-left-color:var(--green); }
+  .insight.danger { background:rgba(185,53,46,.15); border-left-color:var(--rojo); }
+  .insight-title { font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--amber); margin-bottom:6px; }
+  .insight.good .insight-title { color:var(--green); }
+  .insight.danger .insight-title { color:var(--rojo); }
+  .insight p { font-size:13px; line-height:1.7; color:rgba(240,237,232,.85); }
+
+  /* PLATFORM CARDS */
+  .plat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:24px; }
+  .plat-card { background:var(--gris2); padding:20px; border-radius:2px; border-top:3px solid var(--amber); }
+  .plat-card.star  { border-top-color:var(--green); }
+  .plat-card.dead  { border-top-color:var(--rojo); }
+  .plat-name { font-family:'Oswald',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+  .roas-badge { font-size:11px; font-family:'Oswald',sans-serif; padding:2px 8px; border-radius:2px; }
+  .roas-g { background:rgba(91,191,138,.15); color:var(--green); }
+  .roas-r { background:rgba(185,53,46,.15); color:var(--rojo); }
+  .plat-row { display:flex; justify-content:space-between; font-size:13px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+  .plat-row:last-child { border-bottom:none; }
+  .plat-row .mk { color:var(--muted); }
+  .plat-row .mv { font-family:'Oswald',sans-serif; font-weight:600; }
+
+  /* FUNNEL */
+  .funnel { display:flex; flex-direction:column; gap:6px; }
+  .funnel-row { display:flex; align-items:center; gap:12px; }
+  .funnel-lbl { width:130px; text-align:right; font-size:12px; color:var(--muted); flex-shrink:0; }
+  .funnel-wrap { flex:1; background:rgba(255,255,255,.07); border-radius:2px; height:30px; overflow:hidden; }
+  .funnel-fill { height:100%; display:flex; align-items:center; padding:0 12px; font-family:'Oswald',sans-serif; font-size:13px; font-weight:600; border-radius:2px; }
+  .funnel-fill.f1 { background:rgba(123,159,232,.35); color:var(--blue); }
+  .funnel-fill.f2 { background:rgba(123,159,232,.25); color:var(--blue); }
+  .funnel-fill.f3 { background:rgba(233,159,47,.3); color:var(--amber); }
+  .funnel-fill.f4 { background:rgba(91,191,138,.3); color:var(--green); }
+  .funnel-pct { width:50px; font-size:11px; color:var(--amber); font-family:'Oswald',sans-serif; }
+
+  /* VS TABLE */
+  .vs-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+  .vs-card { background:var(--gris2); padding:22px; border-radius:2px; border-top:3px solid var(--muted); }
+  .vs-card.winner { border-top:3px solid var(--green); }
+  .vs-title { font-family:'Oswald',sans-serif; font-size:15px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .win-badge { font-size:10px; background:rgba(91,191,138,.15); color:var(--green); padding:2px 8px; border-radius:2px; font-family:'Oswald',sans-serif; letter-spacing:1px; }
+  .vs-row { display:flex; justify-content:space-between; font-size:13px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+  .vs-row:last-child { border-bottom:none; }
+  .vs-row .vk { color:var(--muted); }
+  .vs-row .vv { font-family:'Oswald',sans-serif; font-weight:600; }
+  .vs-row .vv.green { color:var(--green); }
+  .vs-row .vv.red { color:var(--rojo); }
+
+  /* CHART */
+  .chart-box { background:var(--gris2); padding:22px; border-radius:2px; }
+  .chart-title { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--amber); margin-bottom:14px; }
+  .chart-legend { display:flex; gap:16px; font-size:12px; color:var(--muted); margin-bottom:12px; }
+  .chart-legend span { display:flex; align-items:center; gap:5px; }
+  .chart-legend .dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+
+  /* FOOTER */
+  footer { background:var(--azul); border-top:4px solid var(--amber); padding:28px 48px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+  footer .logo { font-family:'Oswald',sans-serif; font-size:16px; font-weight:700; letter-spacing:2px; }
+  footer .info { font-size:11px; color:rgba(240,237,232,.5); text-align:right; }
+
+  /* RESPONSIVE */
+  @media(max-width:800px) {
+    .hero { padding:36px 20px 28px; }
+    .section { padding:36px 20px; }
+    .hero-kpis { grid-template-columns:repeat(3,1fr); }
+    .vs-grid { grid-template-columns:1fr; }
+    footer { padding:24px 20px; }
+    footer .info { text-align:left; }
+  }
+  @media(max-width:500px) {
+    .hero-kpis { grid-template-columns:1fr 1fr; }
+    .kpi-grid { grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">La Ola Studio · Análisis de Campaña</div>
+  <div class="hero-period">27 mayo — 3 junio 2026 · Meta Ads · B2C</div>
+  <h1>Cyber Junio 2026<br>Fün Superfoods</h1>
+  <div class="hero-sub">Análisis exclusivo del anuncio Cyber Junio 2026 — rendimiento por ubicación, funnel y comparativa</div>
+  <div class="hero-kpis">
+    <div class="hero-kpi"><span class="lbl">Inversión</span><span class="val">$18.187</span></div>
+    <div class="hero-kpi"><span class="lbl">Ingresos</span><span class="val">$62.914</span></div>
+    <div class="hero-kpi"><span class="lbl">ROAS</span><span class="val green">3.46x</span></div>
+    <div class="hero-kpi"><span class="lbl">Compras</span><span class="val">5</span></div>
+    <div class="hero-kpi"><span class="lbl">CPA</span><span class="val green">$3.637</span></div>
+  </div>
+</section>
+
+<!-- 01 RESUMEN -->
+<section class="section">
+  <div class="sec-label"><span>01 · Resumen del Anuncio</span></div>
+  <h2 class="sec-title">Cyber Junio 2026 — Visión General</h2>
+
+  <div class="kpi-grid">
+    <div class="kpi green">
+      <span class="lbl">ROAS</span>
+      <div class="val green">3.46x</div>
+      <div class="sub">Umbral rentable: 2x ✓</div>
+    </div>
+    <div class="kpi green">
+      <span class="lbl">Ingresos atribuidos</span>
+      <div class="val green">$62.914</div>
+      <div class="sub">40% ingresos B2C del período</div>
+    </div>
+    <div class="kpi">
+      <span class="lbl">Inversión total</span>
+      <div class="val">$18.187</div>
+      <div class="sub">18% del presupuesto B2C</div>
+    </div>
+    <div class="kpi">
+      <span class="lbl">Compras</span>
+      <div class="val">5</div>
+      <div class="sub">38% de las compras B2C</div>
+    </div>
+    <div class="kpi green">
+      <span class="lbl">CPA</span>
+      <div class="val green">$3.637</div>
+      <div class="sub">Mejor CPA del período</div>
+    </div>
+    <div class="kpi">
+      <span class="lbl">Carritos añadidos</span>
+      <div class="val">20</div>
+      <div class="sub">Conv. carrito→compra: 25%</div>
+    </div>
+    <div class="kpi">
+      <span class="lbl">Clics en enlace</span>
+      <div class="val">228</div>
+      <div class="sub">CTR promedio: 1,58%</div>
+    </div>
+    <div class="kpi">
+      <span class="lbl">Impresiones</span>
+      <div class="val">14.397</div>
+      <div class="sub">Alcance: 8.892 personas</div>
+    </div>
+  </div>
+
+  <div class="insight good">
+    <div class="insight-title">★ Destacado del período</div>
+    <p>El Cyber junio 2026 es el anuncio con mejor ROAS y mejor CPA de todo el período analizado. Con solo el 17,9% de la inversión B2C total, generó el 39,9% de los ingresos atribuidos. Es el anuncio más eficiente por lejos.</p>
+  </div>
+</section>
+
+<!-- 02 POR UBICACIÓN -->
+<section class="section">
+  <div class="sec-label"><span>02 · Rendimiento por Ubicación</span></div>
+  <h2 class="sec-title">Dónde funcionó y dónde no</h2>
+
+  <div class="plat-grid">
+    <div class="plat-card star">
+      <div class="plat-name">
+        <span>Instagram Reels</span>
+        <span class="roas-badge roas-g">8.95x ★</span>
+      </div>
+      <div class="plat-row"><span class="mk">Inversión</span><span class="mv" style="color:var(--green)">$1.340</span></div>
+      <div class="plat-row"><span class="mk">Compras</span><span class="mv">2</span></div>
+      <div class="plat-row"><span class="mk">Ingresos</span><span class="mv" style="color:var(--green)">$11.995</span></div>
+      <div class="plat-row"><span class="mk">CPA</span><span class="mv" style="color:var(--green)">$670</span></div>
+      <div class="plat-row"><span class="mk">CTR</span><span class="mv">3,12%</span></div>
+    </div>
+    <div class="plat-card star">
+      <div class="plat-name">
+        <span>Instagram Feed</span>
+        <span class="roas-badge roas-g">7.53x</span>
+      </div>
+      <div class="plat-row"><span class="mk">Inversión</span><span class="mv">$6.758</span></div>
+      <div class="plat-row"><span class="mk">Compras</span><span class="mv">3</span></div>
+      <div class="plat-row"><span class="mk">Ingresos</span><span class="mv" style="color:var(--green)">$50.919</span></div>
+      <div class="plat-row"><span class="mk">CPA</span><span class="mv">$2.253</span></div>
+      <div class="plat-row"><span class="mk">CTR</span><span class="mv">2,52%</span></div>
+    </div>
+    <div class="plat-card dead">
+      <div class="plat-name">
+        <span>Instagram Stories</span>
+        <span class="roas-badge roas-r">0.00x</span>
+      </div>
+      <div class="plat-row"><span class="mk">Inversión</span><span class="mv" style="color:var(--rojo)">$6.557</span></div>
+      <div class="plat-row"><span class="mk">Compras</span><span class="mv">0</span></div>
+      <div class="plat-row"><span class="mk">Ingresos</span><span class="mv">$0</span></div>
+      <div class="plat-row"><span class="mk">CPA</span><span class="mv">—</span></div>
+      <div class="plat-row"><span class="mk">CTR</span><span class="mv">2,10%</span></div>
+    </div>
+    <div class="plat-card dead">
+      <div class="plat-name">
+        <span>Facebook Feed</span>
+        <span class="roas-badge roas-r">0.00x</span>
+      </div>
+      <div class="plat-row"><span class="mk">Inversión</span><span class="mv" style="color:var(--rojo)">$3.288</span></div>
+      <div class="plat-row"><span class="mk">Compras</span><span class="mv">0</span></div>
+      <div class="plat-row"><span class="mk">Ingresos</span><span class="mv">$0</span></div>
+      <div class="plat-row"><span class="mk">CPA</span><span class="mv">—</span></div>
+      <div class="plat-row"><span class="mk">CTR</span><span class="mv">3,75%</span></div>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-title">Inversión vs Ingresos por ubicación</div>
+    <div class="chart-legend">
+      <span><span class="dot" style="background:#7B9FE8"></span>Inversión</span>
+      <span><span class="dot" style="background:#5BBF8A"></span>Ingresos atribuidos</span>
+    </div>
+    <div style="position:relative; width:100%; height:220px;">
+      <canvas id="chartUbic" role="img" aria-label="Inversión vs ingresos por ubicación del anuncio Cyber junio 2026">IG Feed: $6.758 inv / $50.919 ing. IG Reels: $1.340 / $11.995. IG Stories: $6.557 / $0. FB Feed: $3.288 / $0.</canvas>
+    </div>
+  </div>
+
+  <div class="insight danger" style="margin-top:20px;">
+    <div class="insight-title">⚠ Presupuesto desperdiciado</div>
+    <p>Instagram Stories y Facebook Feed consumieron juntos $9.845 (54% del presupuesto del anuncio) generando $0 en ingresos. Las 5 compras vinieron 100% de IG Feed y IG Reels. Si el presupuesto se hubiese concentrado solo ahí, el ROAS del anuncio habría superado 7x.</p>
+  </div>
+</section>
+
+<!-- 03 FUNNEL -->
+<section class="section">
+  <div class="sec-label"><span>03 · Funnel de Conversión</span></div>
+  <h2 class="sec-title">De la impresión a la compra</h2>
+
+  <div class="funnel">
+    <div class="funnel-row">
+      <span class="funnel-lbl">Alcance</span>
+      <div class="funnel-wrap"><div class="funnel-fill f1" style="width:100%">8.892 personas</div></div>
+      <span class="funnel-pct">100%</span>
+    </div>
+    <div class="funnel-row">
+      <span class="funnel-lbl">Impresiones</span>
+      <div class="funnel-wrap"><div class="funnel-fill f2" style="width:100%">14.397 (frec. 1,62)</div></div>
+      <span class="funnel-pct">—</span>
+    </div>
+    <div class="funnel-row">
+      <span class="funnel-lbl">Clics enlace</span>
+      <div class="funnel-wrap"><div class="funnel-fill f1" style="width:65%">228</div></div>
+      <span class="funnel-pct">1,58%</span>
+    </div>
+    <div class="funnel-row">
+      <span class="funnel-lbl">Carrito añadido</span>
+      <div class="funnel-wrap"><div class="funnel-fill f3" style="width:35%">20</div></div>
+      <span class="funnel-pct">8,77%</span>
+    </div>
+    <div class="funnel-row">
+      <span class="funnel-lbl">Compra</span>
+      <div class="funnel-wrap"><div class="funnel-fill f4" style="width:16%">5 compras</div></div>
+      <span class="funnel-pct">25%</span>
+    </div>
+  </div>
+
+  <div class="insight good" style="margin-top:20px;">
+    <div class="insight-title">★ Tasa carrito → compra</div>
+    <p>El 25% de quienes añaden al carrito durante el Cyber completan la compra — casi el doble del promedio mensual (13,4%). El descuento elimina la fricción en el checkout. Esto confirma que el precio es la principal barrera el resto del mes.</p>
+  </div>
+</section>
+
+<!-- 04 COMPARATIVA -->
+<section class="section">
+  <div class="sec-label"><span>04 · Cyber vs Resto B2C</span></div>
+  <h2 class="sec-title">Eficiencia relativa del anuncio</h2>
+
+  <div class="vs-grid">
+    <div class="vs-card winner">
+      <div class="vs-title">Cyber junio 2026 <span class="win-badge">Ganador</span></div>
+      <div class="vs-row"><span class="vk">Inversión</span><span class="vv">$18.187</span></div>
+      <div class="vs-row"><span class="vk">Ingresos atribuidos</span><span class="vv green">$62.914</span></div>
+      <div class="vs-row"><span class="vk">ROAS</span><span class="vv green">3.46x</span></div>
+      <div class="vs-row"><span class="vk">CPA</span><span class="vv green">$3.637</span></div>
+      <div class="vs-row"><span class="vk">Compras</span><span class="vv">5</span></div>
+      <div class="vs-row"><span class="vk">% del presupuesto B2C</span><span class="vv">17,9%</span></div>
+      <div class="vs-row"><span class="vk">% de ingresos B2C</span><span class="vv green">39,9%</span></div>
+    </div>
+    <div class="vs-card">
+      <div class="vs-title">Resto anuncios B2C</div>
+      <div class="vs-row"><span class="vk">Inversión</span><span class="vv">$83.569</span></div>
+      <div class="vs-row"><span class="vk">Ingresos atribuidos</span><span class="vv">$94.461</span></div>
+      <div class="vs-row"><span class="vk">ROAS</span><span class="vv red">1.13x</span></div>
+      <div class="vs-row"><span class="vk">CPA</span><span class="vv red">$10.446</span></div>
+      <div class="vs-row"><span class="vk">Compras</span><span class="vv">8</span></div>
+      <div class="vs-row"><span class="vk">% del presupuesto B2C</span><span class="vv">82,1%</span></div>
+      <div class="vs-row"><span class="vk">% de ingresos B2C</span><span class="vv">60,1%</span></div>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-title">ROAS comparado</div>
+    <div style="position:relative; width:100%; height:160px;">
+      <canvas id="chartVS" role="img" aria-label="Comparativa de ROAS: Cyber junio 2026 con 3.46x vs resto de anuncios B2C con 1.13x">Cyber junio 2026: ROAS 3.46x. Resto B2C: ROAS 1.13x.</canvas>
+    </div>
+  </div>
+</section>
+
+<!-- 05 CONCLUSIONES -->
+<section class="section">
+  <div class="sec-label"><span>05 · Conclusiones y Próximos Pasos</span></div>
+  <h2 class="sec-title">Qué hacer con este aprendizaje</h2>
+
+  <div class="insight good">
+    <div class="insight-title">★ Instagram Reels: la ubicación estrella</div>
+    <p>ROAS 8.95x con CPA de $670 — el número más eficiente de todo el período. En el próximo evento de descuentos, priorizar entrega manual en Reels y Feed de Instagram debe ser la primera decisión antes de activar el anuncio.</p>
+  </div>
+
+  <div class="insight danger">
+    <div class="insight-title">✗ Desactivar Stories y Facebook Feed en el próximo Cyber</div>
+    <p>$9.845 invertidos con 0 compras. Redirigir ese presupuesto íntegramente a IG Feed y IG Reels llevaría el ROAS del anuncio a 7x–9x en el siguiente evento. No es un problema de creativo — es un problema de placement.</p>
+  </div>
+
+  <div class="insight good">
+    <div class="insight-title">★ El descuento como desbloqueador de carrito</div>
+    <p>Tasa carrito→compra de 25% durante el Cyber vs 13,4% en el resto del mes. El precio es la principal fricción. Considerar activar recuperación de carrito abandonado con cupón de urgencia el resto del mes para replicar este efecto fuera de los Cyber Days.</p>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">→ Replicar el formato en junio y julio</div>
+    <p>Este anuncio demuestra que el formato Cyber (oferta de tiempo limitado + descuento visible) convierte significativamente mejor que el contenido permanente. Testear un formato similar para Día del Padre (15 junio) y Winter Sale (julio) con placements exclusivos en IG Reels y Feed.</p>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="logo">La Ola Studio</div>
+    <div style="font-size:11px; color:rgba(240,237,232,.5); margin-top:4px;">Análisis de Campaña · Fün Superfoods</div>
+  </div>
+  <div class="info">
+    Período: 27 mayo — 3 junio 2026<br>
+    Datos reales extraídos de Meta Ads Manager
+  </div>
+</footer>
+
+<script>
+Chart.defaults.color = '#9A9A9A';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+
+new Chart(document.getElementById('chartUbic'), {
+  type: 'bar',
+  data: {
+    labels: ['IG Feed', 'IG Reels', 'IG Stories', 'FB Feed'],
+    datasets: [
+      { label: 'Inversión', data: [6758, 1340, 6557, 3288], backgroundColor: '#7B9FE8', borderRadius: 2 },
+      { label: 'Ingresos atribuidos', data: [50919, 11995, 0, 0], backgroundColor: '#5BBF8A', borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 11 }, callback: v => '$' + Math.round(v/1000) + 'K' } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartVS'), {
+  type: 'bar',
+  data: {
+    labels: ['Cyber junio 2026', 'Resto anuncios B2C'],
+    datasets: [{
+      label: 'ROAS',
+      data: [3.46, 1.13],
+      backgroundColor: ['#5BBF8A', '#9A9A9A'],
+      borderRadius: 2
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 11 }, callback: v => v + 'x' }, max: 5 },
+      y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+    }
+  }
+});
+</script>
+</body>
+</html>
