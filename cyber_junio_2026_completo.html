@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Junio 2026 · Fün Superfoods · La Ola Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --azul:#2E3B74; --azul-dark:#181E35; --verde-dark:#1E2A1E;
+    --amber:#E99F2F; --rojo:#B9352E; --negro:#1A1A1A;
+    --gris:#3D3D3D; --white:#F0EDE8; --muted:#9A9A9A;
+    --green:#5BBF8A; --blue:#7B9FE8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--negro);color:var(--white);font-family:'Pathway Gothic One',sans-serif;font-size:16px;line-height:1.5;}
+  h1,h2,h3,.num{font-family:'Oswald',sans-serif;}
+
+  /* HERO */
+  .hero{background:var(--azul);border-bottom:4px solid var(--amber);padding:56px 48px 48px;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:rgba(233,159,47,.05);}
+  .badge{display:inline-block;background:rgba(233,159,47,.15);border:1px solid var(--amber);color:var(--amber);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:5px 14px;border-radius:2px;margin-bottom:14px;animation:pulse 3s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .hero-period{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(233,159,47,.75);margin-bottom:6px;}
+  .hero h1{font-size:clamp(28px,5vw,56px);font-weight:700;text-transform:uppercase;line-height:1;margin-bottom:6px;}
+  .hero-sub{color:rgba(240,237,232,.5);font-size:14px;margin-bottom:36px;}
+  .hero-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:rgba(233,159,47,.2);border:1px solid rgba(233,159,47,.2);}
+  .hkpi{background:rgba(24,30,53,.8);padding:18px 14px;text-align:center;}
+  .hkpi .lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);opacity:.8;display:block;margin-bottom:5px;}
+  .hkpi .val{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;}
+  .hkpi .val.g{color:var(--green);}
+
+  /* SECTION */
+  .sec{padding:52px 48px;}
+  .sec.az{background:var(--azul-dark);}
+  .sec.vd{background:var(--verde-dark);}
+  .sec-label{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+  .sec-label::before{content:'';display:block;width:3px;height:18px;background:var(--amber);}
+  .sec-label span{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);}
+  .sec-title{font-size:clamp(20px,2.5vw,30px);font-weight:700;text-transform:uppercase;margin-bottom:6px;}
+  .sec-desc{color:var(--muted);font-size:13px;margin-bottom:28px;max-width:680px;}
+
+  /* KPI CARDS */
+  .kpi-grid{display:grid;gap:14px;margin-bottom:28px;}
+  .g5{grid-template-columns:repeat(5,1fr);}
+  .g4{grid-template-columns:repeat(4,1fr);}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .g2{grid-template-columns:1fr 1fr;}
+  .kpi{background:var(--gris);border-top:3px solid var(--amber);padding:20px;border-radius:2px;}
+  .kpi.g{border-top-color:var(--green);}
+  .kpi.r{border-top-color:var(--rojo);}
+  .kpi.b{border-top-color:var(--blue);}
+  .kpi .lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;}
+  .kpi .val{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;line-height:1;}
+  .kpi .val.g{color:var(--green);}
+  .kpi .val.r{color:var(--rojo);}
+  .kpi .sub{font-size:11px;color:var(--muted);margin-top:5px;}
+
+  /* INSIGHT */
+  .ins{background:rgba(46,59,116,.35);border-left:4px solid var(--amber);padding:20px 24px;margin:20px 0;border-radius:0 2px 2px 0;}
+  .ins.g{background:rgba(37,106,70,.2);border-left-color:var(--green);}
+  .ins.r{background:rgba(185,53,46,.12);border-left-color:var(--rojo);}
+  .ins-t{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:7px;}
+  .ins.g .ins-t{color:var(--green);}
+  .ins.r .ins-t{color:var(--rojo);}
+  .ins p{font-size:13px;line-height:1.75;color:rgba(240,237,232,.85);}
+
+  /* ALERT */
+  .alert{display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:2px;margin-bottom:12px;}
+  .alert.danger{background:rgba(185,53,46,.1);border-left:3px solid var(--rojo);}
+  .alert.warn{background:rgba(233,159,47,.1);border-left:3px solid var(--amber);}
+  .alert.success{background:rgba(91,191,138,.1);border-left:3px solid var(--green);}
+  .alert.info{background:rgba(123,159,232,.1);border-left:3px solid var(--blue);}
+  .alert-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+  .alert-title{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+  .alert p{font-size:13px;color:rgba(240,237,232,.75);line-height:1.6;}
+
+  /* PLACEMENT TABLE */
+  .plat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:24px;}
+  .plat-card{background:var(--gris);padding:20px;border-radius:2px;border-top:3px solid var(--muted);}
+  .plat-card.star{border-top-color:var(--green);}
+  .plat-card.ok{border-top-color:var(--amber);}
+  .plat-card.dead{border-top-color:var(--rojo);}
+  .plat-name{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+  .rbadge{font-size:10px;font-family:'Oswald',sans-serif;padding:2px 7px;border-radius:2px;}
+  .rbadge.g{background:rgba(91,191,138,.15);color:var(--green);}
+  .rbadge.a{background:rgba(233,159,47,.15);color:var(--amber);}
+  .rbadge.r{background:rgba(185,53,46,.15);color:var(--rojo);}
+  .pr{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+  .pr:last-child{border-bottom:none;}
+  .pr .pk{color:var(--muted);}
+  .pr .pv{font-family:'Oswald',sans-serif;font-weight:600;}
+
+  /* TABLE */
+  .table-wrap{overflow-x:auto;margin:16px 0;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{background:rgba(233,159,47,.08);color:var(--amber);font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:10px 12px;text-align:left;border-bottom:1px solid rgba(233,159,47,.2);}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.04);}
+  tbody tr:hover{background:rgba(255,255,255,.02);}
+  tbody td{padding:9px 12px;color:rgba(240,237,232,.8);}
+  .bg{background:rgba(91,191,138,.12);color:var(--green);padding:2px 8px;border-radius:2px;font-size:10px;font-family:'Oswald',sans-serif;}
+  .ba{background:rgba(233,159,47,.12);color:var(--amber);padding:2px 8px;border-radius:2px;font-size:10px;font-family:'Oswald',sans-serif;}
+  .br{background:rgba(185,53,46,.12);color:var(--rojo);padding:2px 8px;border-radius:2px;font-size:10px;font-family:'Oswald',sans-serif;}
+
+  /* FUNNEL */
+  .funnel{display:flex;flex-direction:column;gap:7px;}
+  .frow{display:flex;align-items:center;gap:12px;}
+  .flbl{width:140px;text-align:right;font-size:12px;color:var(--muted);flex-shrink:0;}
+  .fwrap{flex:1;background:rgba(255,255,255,.06);border-radius:2px;height:32px;overflow:hidden;}
+  .ffill{height:100%;display:flex;align-items:center;padding:0 14px;font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;border-radius:2px;white-space:nowrap;}
+  .f1{background:rgba(123,159,232,.3);color:var(--blue);}
+  .f2{background:rgba(233,159,47,.3);color:var(--amber);}
+  .f3{background:rgba(91,191,138,.3);color:var(--green);}
+  .fpct{width:50px;font-size:11px;color:var(--amber);font-family:'Oswald',sans-serif;}
+  .farrow{font-size:10px;color:var(--amber);margin:1px 0 1px 152px;opacity:.5;}
+
+  /* CHARTS */
+  .chart-box{background:var(--gris);padding:22px;border-radius:2px;}
+  .chart-title{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;}
+  .chart-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-bottom:10px;}
+  .chart-legend span{display:flex;align-items:center;gap:5px;}
+  .dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+  /* PROGRESS */
+  .prog-item{margin-bottom:14px;}
+  .prog-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
+  .prog-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+  .prog-fill{height:100%;border-radius:3px;}
+
+  /* PLAN */
+  .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .action{background:var(--gris);padding:22px;border-radius:2px;border-left:4px solid;}
+  .action.r{border-left-color:var(--rojo);}
+  .action.a{border-left-color:var(--amber);}
+  .action.g{border-left-color:var(--green);}
+  .action.b{border-left-color:var(--blue);}
+  .action-pri{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'Oswald',sans-serif;opacity:.8;margin-bottom:5px;}
+  .action-title{font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;}
+  .action-desc{font-size:13px;color:rgba(240,237,232,.7);line-height:1.65;margin-bottom:8px;}
+  .action-imp{font-size:10px;font-family:'Oswald',sans-serif;letter-spacing:1px;text-transform:uppercase;}
+
+  /* FOOTER */
+  footer{background:var(--azul);border-top:4px solid var(--amber);padding:30px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  footer .logo{font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;}
+  footer .info{font-size:11px;color:rgba(240,237,232,.45);text-align:right;}
+
+  @media(max-width:900px){
+    .hero{padding:40px 24px 32px;} .sec{padding:40px 24px;}
+    .hero-kpis{grid-template-columns:repeat(3,1fr);}
+    .g5,.g4,.g3{grid-template-columns:repeat(2,1fr);}
+    .action-grid{grid-template-columns:1fr;}
+    footer{padding:24px;} footer .info{text-align:left;}
+  }
+  @media(max-width:500px){
+    .hero-kpis{grid-template-columns:1fr 1fr;}
+    .g2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">La Ola Studio · Análisis de Anuncio</div>
+  <div class="hero-period">26 mayo — 8 junio 2026 · Meta Ads · Ventas permanente</div>
+  <h1>Cyber Junio 2026<br>Fün Superfoods</h1>
+  <div class="hero-sub">Análisis completo del anuncio: rendimiento global, placements, funnel de conversión y recomendaciones</div>
+  <div class="hero-kpis">
+    <div class="hkpi"><span class="lbl">Inversión</span><span class="val">$52.732</span></div>
+    <div class="hkpi"><span class="lbl">Ingresos atrib.</span><span class="val">$177.706</span></div>
+    <div class="hkpi"><span class="lbl">ROAS</span><span class="val g">3.37x</span></div>
+    <div class="hkpi"><span class="lbl">Compras</span><span class="val">13</span></div>
+    <div class="hkpi"><span class="lbl">CPA</span><span class="val g">$4.056</span></div>
+  </div>
+</section>
+
+<!-- 01 RESUMEN -->
+<section class="sec az">
+  <div class="sec-label"><span>01 · Resumen General</span></div>
+  <h2 class="sec-title">Visión global del anuncio</h2>
+  <p class="sec-desc">Campaña: Ventas permanente · Conjunto: Conjunto amplio, RM · Período: 26 mayo – 8 junio 2026 · 16 placements activos en Meta.</p>
+
+  <div class="kpi-grid g5">
+    <div class="kpi g"><span class="lbl">ROAS</span><div class="val g">3.37x</div><div class="sub">Umbral óptimo: 3x ✓</div></div>
+    <div class="kpi g"><span class="lbl">Ingresos atribuidos</span><div class="val">$177.706</div><div class="sub">Conversión de 13 compras</div></div>
+    <div class="kpi"><span class="lbl">Inversión total</span><div class="val">$52.732</div><div class="sub">Período de 14 días</div></div>
+    <div class="kpi"><span class="lbl">Compras</span><div class="val">13</div><div class="sub">Ticket prom. $13.670</div></div>
+    <div class="kpi g"><span class="lbl">CPA</span><div class="val g">$4.056</div><div class="sub">Mejor CPA del período</div></div>
+  </div>
+
+  <div class="kpi-grid g5">
+    <div class="kpi b"><span class="lbl">Alcance</span><div class="val">5.676</div><div class="sub">Personas únicas</div></div>
+    <div class="kpi b"><span class="lbl">Impresiones</span><div class="val">9.636</div><div class="sub">Frecuencia media: 1.53x</div></div>
+    <div class="kpi"><span class="lbl">Clics en enlace</span><div class="val">110</div><div class="sub">CTR: 0.31% · CPC: $122</div></div>
+    <div class="kpi"><span class="lbl">Carrito añadido</span><div class="val">56</div><div class="sub">Val. carrito: $506.830</div></div>
+    <div class="kpi"><span class="lbl">Visitas perfil IG</span><div class="val">95</div><div class="sub">Tráfico orgánico indirecto</div></div>
+  </div>
+
+  <div class="ins g">
+    <div class="ins-t">★ Contexto del anuncio</div>
+    <p>El Cyber junio 2026 es el anuncio con mejor ROAS del período analizado: 3.37x, superando el umbral de rentabilidad de 3x. El dato más sorprendente es la tasa clic→carrito del 50.9% — uno de cada dos usuarios que hace clic agrega el producto al carrito, señal de que el precio de oferta del Cyber elimina la fricción de decisión. El problema está aguas abajo: la conversión carrito→compra (23.2%) y la distribución del presupuesto entre placements.</p>
+  </div>
+</section>
+
+<!-- 02 PLACEMENTS -->
+<section class="sec vd">
+  <div class="sec-label"><span>02 · Rendimiento por Placement</span></div>
+  <h2 class="sec-title">Dónde funcionó y dónde no</h2>
+  <p class="sec-desc">El anuncio se distribuyó automáticamente en 16 ubicaciones. Solo 3 generaron ingresos — el resto consumió presupuesto sin retorno.</p>
+
+  <div class="plat-grid">
+    <div class="plat-card star">
+      <div class="plat-name"><span>IG Reels</span><span class="rbadge g">10.66x ★</span></div>
+      <div class="pr"><span class="pk">Inversión</span><span class="pv" style="color:var(--green)">$3.938</span></div>
+      <div class="pr"><span class="pk">Compras</span><span class="pv">5</span></div>
+      <div class="pr"><span class="pk">Ingresos</span><span class="pv" style="color:var(--green)">$41.963</span></div>
+      <div class="pr"><span class="pk">CPA</span><span class="pv" style="color:var(--green)">$788</span></div>
+      <div class="pr"><span class="pk">CTR enlace</span><span class="pv">1.30%</span></div>
+      <div class="pr"><span class="pk">Carrito añadido</span><span class="pv">4</span></div>
+    </div>
+    <div class="plat-card ok">
+      <div class="plat-name"><span>IG Stories</span><span class="rbadge a">4.15x</span></div>
+      <div class="pr"><span class="pk">Inversión</span><span class="pv">$20.464</span></div>
+      <div class="pr"><span class="pk">Compras</span><span class="pv">5</span></div>
+      <div class="pr"><span class="pk">Ingresos</span><span class="pv">$84.824</span></div>
+      <div class="pr"><span class="pk">CPA</span><span class="pv">$4.093</span></div>
+      <div class="pr"><span class="pk">CTR enlace</span><span class="pv">1.32%</span></div>
+      <div class="pr"><span class="pk">Carrito añadido</span><span class="pv">23</span></div>
+    </div>
+    <div class="plat-card ok">
+      <div class="plat-name"><span>IG Feed</span><span class="rbadge a">2.68x</span></div>
+      <div class="pr"><span class="pk">Inversión</span><span class="pv">$18.989</span></div>
+      <div class="pr"><span class="pk">Compras</span><span class="pv">3</span></div>
+      <div class="pr"><span class="pk">Ingresos</span><span class="pv">$50.919</span></div>
+      <div class="pr"><span class="pk">CPA</span><span class="pv">$6.330</span></div>
+      <div class="pr"><span class="pk">CTR enlace</span><span class="pv">0.78%</span></div>
+      <div class="pr"><span class="pk">Carrito añadido</span><span class="pv">13</span></div>
+    </div>
+    <div class="plat-card dead">
+      <div class="plat-name"><span>FB Feed</span><span class="rbadge r">0.00x</span></div>
+      <div class="pr"><span class="pk">Inversión</span><span class="pv" style="color:var(--rojo)">$8.596</span></div>
+      <div class="pr"><span class="pk">Compras</span><span class="pv">0</span></div>
+      <div class="pr"><span class="pk">Ingresos</span><span class="pv">$0</span></div>
+      <div class="pr"><span class="pk">CPA</span><span class="pv">—</span></div>
+      <div class="pr"><span class="pk">CTR enlace</span><span class="pv">1.58%</span></div>
+      <div class="pr"><span class="pk">Carrito añadido</span><span class="pv">16</span></div>
+    </div>
+  </div>
+
+  <div class="chart-box" style="margin-bottom:16px;">
+    <div class="chart-title">Inversión vs Ingresos — Top 4 placements</div>
+    <div class="chart-legend">
+      <span><span class="dot" style="background:#7B9FE8"></span>Inversión (CLP)</span>
+      <span><span class="dot" style="background:#5BBF8A"></span>Ingresos atribuidos (CLP)</span>
+    </div>
+    <div style="position:relative;width:100%;height:220px;">
+      <canvas id="chartPlat" role="img" aria-label="Inversión vs ingresos por placement: IG Reels $3.938/$41.963, IG Stories $20.464/$84.824, IG Feed $18.989/$50.919, FB Feed $8.596/$0">IG Reels: inv $3.938, ing $41.963. IG Stories: $20.464, $84.824. IG Feed: $18.989, $50.919. FB Feed: $8.596, $0.</canvas>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Placement</th><th>Inversión</th><th>Impr.</th><th>CTR</th><th>Clics</th><th>Carrito</th><th>Compras</th><th>Ingresos</th><th>ROAS</th><th>CPA</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>IG Reels</td><td>$3.938</td><td>998</td><td>1,30%</td><td>13</td><td>4</td><td>5</td><td>$41.963</td><td><span class="bg">10.66x ★</span></td><td>$788</td></tr>
+        <tr><td>IG Stories</td><td>$20.464</td><td>3.786</td><td>1,32%</td><td>50</td><td>23</td><td>5</td><td>$84.824</td><td><span class="ba">4.15x</span></td><td>$4.093</td></tr>
+        <tr><td>IG Feed</td><td>$18.989</td><td>2.705</td><td>0,78%</td><td>21</td><td>13</td><td>3</td><td>$50.919</td><td><span class="ba">2.68x</span></td><td>$6.330</td></tr>
+        <tr><td>FB Feed</td><td>$8.596</td><td>1.641</td><td>1,58%</td><td>26</td><td>16</td><td>0</td><td>$0</td><td><span class="br">0.00x</span></td><td>—</td></tr>
+        <tr style="opacity:.5;"><td>FB Reels</td><td>$283</td><td>171</td><td>0%</td><td>0</td><td>0</td><td>0</td><td>$0</td><td><span class="br">0.00x</span></td><td>—</td></tr>
+        <tr style="opacity:.5;"><td>Marketplace + otros (11)</td><td>$462</td><td>549</td><td>0%</td><td>0</td><td>0</td><td>0</td><td>$0</td><td><span class="br">0.00x</span></td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alert danger">
+    <div class="alert-icon">🔴</div>
+    <div><div class="alert-title">FB Feed: $8.596 con ROAS 0x</div><p>Facebook Feed consumió el 16,3% del presupuesto con 0 compras, aunque sí generó 16 carritos ($144.640 en valor de carrito abandonado). El tráfico llega pero no convierte — probable problema de match audiencia/plataforma para este producto.</p></div>
+  </div>
+  <div class="alert success">
+    <div class="alert-icon">✅</div>
+    <div><div class="alert-title">IG Reels: el placement más eficiente</div><p>$3.938 invertidos → $41.963 en ingresos. ROAS 10.66x y CPA $788. Solo representa el 7,5% del presupuesto pero generó el 23,6% de los ingresos. Escalar este placement en el próximo Cyber es la acción más evidente.</p></div>
+  </div>
+</section>
+
+<!-- 03 FUNNEL -->
+<section class="sec az">
+  <div class="sec-label"><span>03 · Funnel de Conversión</span></div>
+  <h2 class="sec-title">De la impresión a la compra</h2>
+  <p class="sec-desc">Análisis de cada etapa del funnel y dónde se pierde audiencia.</p>
+
+  <div style="background:var(--gris);padding:28px;border-radius:2px;margin-bottom:20px;">
+    <div class="funnel">
+      <div class="frow">
+        <span class="flbl">Alcance</span>
+        <div class="fwrap"><div class="ffill f1" style="width:100%">5.676 personas</div></div>
+        <span class="fpct">100%</span>
+      </div>
+      <div class="farrow">▼ freq 1.53</div>
+      <div class="frow">
+        <span class="flbl">Impresiones</span>
+        <div class="fwrap"><div class="ffill f1" style="width:100%">9.636</div></div>
+        <span class="fpct">—</span>
+      </div>
+      <div class="farrow">▼ CTR 1.14%</div>
+      <div class="frow">
+        <span class="flbl">Clics en enlace</span>
+        <div class="fwrap"><div class="ffill f1" style="width:65%">110 clics</div></div>
+        <span class="fpct">1,14%</span>
+      </div>
+      <div class="farrow">▼ 50.9% clic→carrito</div>
+      <div class="frow">
+        <span class="flbl">Carrito añadido</span>
+        <div class="fwrap"><div class="ffill f2" style="width:40%">56 carritos</div></div>
+        <span class="fpct">50,9% ★</span>
+      </div>
+      <div class="farrow">▼ 23.2% carrito→compra</div>
+      <div class="frow">
+        <span class="flbl">Compras</span>
+        <div class="fwrap"><div class="ffill f3" style="width:18%">13 compras</div></div>
+        <span class="fpct">23,2%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-grid g3">
+    <div class="kpi g">
+      <span class="lbl">Tasa clic → carrito</span>
+      <div class="val g">50,9%</div>
+      <div class="sub">1 de cada 2 clics agrega al carrito</div>
+    </div>
+    <div class="kpi">
+      <span class="lbl">Tasa carrito → compra</span>
+      <div class="val">23,2%</div>
+      <div class="sub">77 de 100 carritos se abandonan</div>
+    </div>
+    <div class="kpi r">
+      <span class="lbl">Valor carrito abandonado</span>
+      <div class="val r">$506.830</div>
+      <div class="sub">Potencial no capturado</div>
+    </div>
+  </div>
+
+  <div class="ins g">
+    <div class="ins-t">★ Tasa clic→carrito excepcional</div>
+    <p>Un CTR enlace→carrito del 50,9% es extraordinariamente alto para e-commerce (benchmark: 8–15%). Esto confirma que el precio de oferta del Cyber elimina casi toda la fricción de intención: el usuario que llega a la página está muy motivado. El cuello de botella no es el interés sino el checkout.</p>
+  </div>
+  <div class="ins r">
+    <div class="ins-t">⚠ $506.830 en carritos abandonados</div>
+    <p>De los 56 carritos añadidos, solo 13 completaron la compra. Los 43 restantes representan $506.830 en valor de conversión potencial no capturado. Sin recuperación de carrito activa (email/WhatsApp), este dinero se pierde completamente.</p>
+  </div>
+
+  <!-- Funnel by placement -->
+  <div class="chart-box" style="margin-top:8px;">
+    <div class="chart-title">Carrito añadido vs Compras — por placement</div>
+    <div class="chart-legend">
+      <span><span class="dot" style="background:#E99F2F"></span>Carrito añadido</span>
+      <span><span class="dot" style="background:#5BBF8A"></span>Compras</span>
+    </div>
+    <div style="position:relative;width:100%;height:200px;">
+      <canvas id="chartFunnel" role="img" aria-label="Carrito vs compras por placement">IG Stories: 23 carrito, 5 compras. FB Feed: 16 carrito, 0 compras. IG Feed: 13 carrito, 3 compras. IG Reels: 4 carrito, 5 compras.</canvas>
+    </div>
+  </div>
+</section>
+
+<!-- 04 EFICIENCIA -->
+<section class="sec vd">
+  <div class="sec-label"><span>04 · Eficiencia de Inversión</span></div>
+  <h2 class="sec-title">Distribución del presupuesto vs retorno</h2>
+
+  <div style="background:var(--gris);padding:24px;border-radius:2px;margin-bottom:20px;">
+    <div class="chart-title">% Inversión por placement</div>
+    <div class="prog-item">
+      <div class="prog-top"><span>IG Stories</span><span style="color:var(--amber)">38,8% ($20.464)</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:38.8%;background:var(--amber)"></div></div>
+    </div>
+    <div class="prog-item">
+      <div class="prog-top"><span>IG Feed</span><span style="color:var(--amber)">36,0% ($18.989)</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:36%;background:var(--amber)"></div></div>
+    </div>
+    <div class="prog-item">
+      <div class="prog-top"><span>FB Feed</span><span style="color:var(--rojo)">16,3% ($8.596)</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:16.3%;background:var(--rojo)"></div></div>
+    </div>
+    <div class="prog-item">
+      <div class="prog-top"><span>IG Reels</span><span style="color:var(--green)">7,5% ($3.938)</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:7.5%;background:var(--green)"></div></div>
+    </div>
+    <div class="prog-item" style="margin-bottom:0">
+      <div class="prog-top"><span>Otros (12 placements)</span><span>0,9% ($745)</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:0.9%;background:var(--muted)"></div></div>
+    </div>
+  </div>
+
+  <div style="background:var(--gris);padding:24px;border-radius:2px;margin-bottom:20px;">
+    <div class="chart-title">% Ingresos atribuidos por placement</div>
+    <div class="prog-item">
+      <div class="prog-top"><span>IG Stories</span><span style="color:var(--green)">47,7% ($84.824)</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:47.7%;background:var(--green)"></div></div>
+    </div>
+    <div class="prog-item">
+      <div class="prog-top"><span>IG Feed</span><span style="color:var(--green)">28,7% ($50.919)</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:28.7%;background:var(--green)"></div></div>
+    </div>
+    <div class="prog-item">
+      <div class="prog-top"><span>IG Reels</span><span style="color:var(--green)">23,6% ($41.963)</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:23.6%;background:var(--green)"></div></div>
+    </div>
+    <div class="prog-item" style="margin-bottom:0">
+      <div class="prog-top"><span>FB Feed + Otros</span><span style="color:var(--rojo)">0% ($0)</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:0%;background:var(--rojo)"></div></div>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-title">ROAS por placement</div>
+    <div style="position:relative;width:100%;height:180px;">
+      <canvas id="chartROAS" role="img" aria-label="ROAS por placement: IG Reels 10.66x, IG Stories 4.15x, IG Feed 2.68x, FB Feed 0x">IG Reels: 10.66x. IG Stories: 4.15x. IG Feed: 2.68x. FB Feed: 0x.</canvas>
+    </div>
+  </div>
+
+  <div class="ins">
+    <div class="ins-t">→ La paradoja del presupuesto</div>
+    <p>IG Reels tiene el ROAS más alto (10.66x) pero solo recibió el 7,5% del presupuesto. IG Stories y Feed recibieron el 74,8% combinado con ROAS de 4.15x y 2.68x. FB Feed recibió el 16,3% con 0 retorno. El algoritmo de Meta distribuyó automáticamente sin optimizar por ROAS — concentrar manualmente en IG Reels e IG Stories en el próximo evento cambiaría el resultado significativamente.</p>
+  </div>
+</section>
+
+<!-- 05 AUDIENCIA -->
+<section class="sec az">
+  <div class="sec-label"><span>05 · Comportamiento de Audiencia</span></div>
+  <h2 class="sec-title">Cómo interactuó la audiencia</h2>
+
+  <div class="kpi-grid g4">
+    <div class="kpi b"><span class="lbl">Alcance total</span><div class="val">5.676</div><div class="sub">Personas únicas impactadas</div></div>
+    <div class="kpi b"><span class="lbl">Frecuencia media</span><div class="val">1.53x</div><div class="sub">Vieron el anuncio 1–2 veces</div></div>
+    <div class="kpi"><span class="lbl">CTR en enlace</span><div class="val">0,31%</div><div class="sub">110 de 9.636 impresiones</div></div>
+    <div class="kpi"><span class="lbl">CPC enlace</span><div class="val">$122</div><div class="sub">Por clic que llega al sitio</div></div>
+  </div>
+
+  <div class="kpi-grid g3">
+    <div class="kpi"><span class="lbl">Visitas perfil IG</span><div class="val">95</div><div class="sub">Efecto halo orgánico del anuncio</div></div>
+    <div class="kpi g"><span class="lbl">Clientes potenciales</span><div class="val">0</div><div class="sub">No aplica (campaña B2C)</div></div>
+    <div class="kpi"><span class="lbl">Ticket promedio</span><div class="val">$13.670</div><div class="sub">$177.706 ÷ 13 compras</div></div>
+  </div>
+
+  <div class="ins">
+    <div class="ins-t">→ Perfil del comprador Cyber</div>
+    <p>Con frecuencia de 1.53x, la mayoría de los compradores convirtieron en el primer o segundo contacto con el anuncio — no necesitaron retargeting intensivo. El ticket promedio de $13.670 sugiere que los compradores Cyber adquirieron productos de precio medio, posiblemente packs o presentaciones grandes motivados por el descuento. Las 95 visitas al perfil de Instagram generadas por el anuncio representan un efecto halo orgánico positivo que se mantiene después del Cyber.</p>
+  </div>
+</section>
+
+<!-- 06 ALERTAS -->
+<section class="sec vd">
+  <div class="sec-label"><span>06 · Alertas y Diagnóstico</span></div>
+  <h2 class="sec-title">Semáforo del anuncio</h2>
+
+  <div class="alert success">
+    <div class="alert-icon">✅</div>
+    <div><div class="alert-title">ROAS 3.37x — sobre el umbral de rentabilidad</div><p>Con margen bruto del 40–50%, un ROAS de 3.37x es rentable. Es el mejor resultado pagado del período analizad para Fün Superfoods en Meta Ads.</p></div>
+  </div>
+  <div class="alert success">
+    <div class="alert-icon">✅</div>
+    <div><div class="alert-title">IG Reels: 10.66x ROAS con solo $3.938 invertidos</div><p>El placement más infrautilizado es el más eficiente. CPA $788 — menos de la mitad del CPA global del anuncio ($4.056).</p></div>
+  </div>
+  <div class="alert danger">
+    <div class="alert-icon">🔴</div>
+    <div><div class="alert-title">$8.596 en FB Feed con 0 ingresos</div><p>Facebook Feed recibió el 16,3% del presupuesto total y generó $0 en ventas. Aunque tuvo 16 carritos, ninguno convirtió. En el próximo evento, excluir esta ubicación manualmente.</p></div>
+  </div>
+  <div class="alert danger">
+    <div class="alert-icon">🔴</div>
+    <div><div class="alert-title">$506.830 en valor de carrito abandonado sin recuperar</div><p>43 de 56 carritos no completaron la compra. Sin flujo de recuperación activo (email/WhatsApp automatizado), este potencial se pierde por completo.</p></div>
+  </div>
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div><div class="alert-title">Distribución automática de placements no optimizada</div><p>Meta distribuyó el presupuesto automáticamente sin priorizar los placements con mejor ROAS. En próximas campañas, usar "Advantage+ Placements" o configurar manualmente con énfasis en IG Reels e IG Stories.</p></div>
+  </div>
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div><div class="alert-title">CTR enlace bajo (0,31% global)</div><p>Aunque la tasa clic→carrito es excelente, el CTR inicial es bajo. Testear variantes del creativo con hook más directo en los primeros 2 segundos podría aumentar el volumen de tráfico sin aumentar el presupuesto.</p></div>
+  </div>
+</section>
+
+<!-- 07 PLAN -->
+<section class="sec az">
+  <div class="sec-label"><span>07 · Plan de Acción</span></div>
+  <h2 class="sec-title">Qué cambiar en el próximo Cyber</h2>
+
+  <div class="action-grid">
+    <div class="action r">
+      <div class="action-pri" style="color:var(--rojo);">🔴 Urgente — Antes del próximo evento</div>
+      <div class="action-title">Desactivar FB Feed en placements</div>
+      <div class="action-desc">$8.596 gastados con 0 ingresos. Excluir manualmente Facebook Feed de la distribución. Redirigir ese presupuesto íntegramente a IG Reels. Impacto directo: el ROAS global del anuncio subiría de 3.37x a estimado 5x+.</div>
+      <div class="action-imp" style="color:var(--rojo);">Impacto: +$28.000 ingresos estimados</div>
+    </div>
+    <div class="action r">
+      <div class="action-pri" style="color:var(--rojo);">🔴 Urgente — Activar antes del próximo Cyber</div>
+      <div class="action-title">Recuperación de carrito abandonado</div>
+      <div class="action-desc">$506.830 en carritos sin completar. Implementar flujo automatizado: email a 1h + 24h post-abandono con recordatorio del descuento Cyber. Recuperar solo el 20% = $101.366 en ingresos adicionales sin invertir más en pauta.</div>
+      <div class="action-imp" style="color:var(--rojo);">Impacto: +$101K potencial sin costo adicional</div>
+    </div>
+    <div class="action a">
+      <div class="action-pri" style="color:var(--amber);">🟡 Alta — Próximo evento</div>
+      <div class="action-title">Triplicar presupuesto en IG Reels</div>
+      <div class="action-desc">IG Reels recibió $3.938 y generó ROAS 10.66x. Aumentar a $12.000–15.000 con entrega manual forzada. Crear versión del creativo optimizada para formato vertical/Reels si no existe ya (relación 9:16, subtítulos quemados, hook en primer segundo).</div>
+      <div class="action-imp" style="color:var(--amber);">Meta: $127.000–160.000 en ingresos solo desde Reels</div>
+    </div>
+    <div class="action a">
+      <div class="action-pri" style="color:var(--amber);">🟡 Alta — Próximo evento</div>
+      <div class="action-title">Testear variante de creativo con CTR más alto</div>
+      <div class="action-desc">El CTR enlace del anuncio es 0,31% global (bajo). Crear variante A/B con: hook de precio en los primeros 2 segundos del video, texto del descuento visible sin necesidad de sonido, y CTA más directo ("Compra con 20% off — solo hoy"). Mantener ambas versiones activas durante el Cyber y pausar la de menor CTR al día 3.</div>
+      <div class="action-imp" style="color:var(--amber);">Hipótesis: duplicar CTR = duplicar compras con mismo presupuesto</div>
+    </div>
+    <div class="action g">
+      <div class="action-pri" style="color:var(--green);">🟢 Oportunidad</div>
+      <div class="action-title">Remarketing post-Cyber para carritos FB Feed</div>
+      <div class="action-desc">FB Feed generó 16 carritos con 0 compras. Crear audiencia personalizada de "añadió al carrito desde Facebook Feed" y exponerla a un anuncio de retargeting en IG Stories/Reels en los 3 días post-Cyber con oferta de cierre ("Últimas unidades con precio Cyber").</div>
+      <div class="action-imp" style="color:var(--green);">Potencial: convertir 3–5 de los 16 carritos FB = +$41K–68K</div>
+    </div>
+    <div class="action b">
+      <div class="action-pri" style="color:var(--blue);">🔵 Mediano plazo</div>
+      <div class="action-title">Calendarizar próximos eventos de descuento</div>
+      <div class="action-desc">Con ROAS 3.37x comprobado, el formato Cyber funciona. Programar eventos similares: Día del Padre (15 jun), CyberMonday Chile (agosto), 18 de septiembre, Black Friday (noviembre). Con las optimizaciones de placement y recuperación de carrito, proyección ROAS 5x+ en próximos eventos.</div>
+      <div class="action-imp" style="color:var(--blue);">Proyección: 4–5 eventos/año con ROAS 5x+</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="logo">La Ola Studio</div>
+    <div style="font-size:11px;color:rgba(240,237,232,.45);margin-top:4px;">Análisis de Anuncio · Fün Superfoods · Cyber Junio 2026</div>
+  </div>
+  <div class="info">
+    Período: 26 mayo — 8 junio 2026<br>
+    Datos reales extraídos de Meta Ads Manager
+  </div>
+</footer>
+
+<script>
+Chart.defaults.color = '#9A9A9A';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+
+// Chart 1: Inversión vs Ingresos por placement
+new Chart(document.getElementById('chartPlat'), {
+  type: 'bar',
+  data: {
+    labels: ['IG Reels', 'IG Stories', 'IG Feed', 'FB Feed'],
+    datasets: [
+      { label: 'Inversión', data: [3938, 20464, 18989, 8596], backgroundColor: '#7B9FE8', borderRadius: 2 },
+      { label: 'Ingresos', data: [41963, 84824, 50919, 0], backgroundColor: '#5BBF8A', borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 11 }, callback: v => '$' + Math.round(v / 1000) + 'K' } }
+    }
+  }
+});
+
+// Chart 2: Carrito vs Compras funnel por placement
+new Chart(document.getElementById('chartFunnel'), {
+  type: 'bar',
+  data: {
+    labels: ['IG Stories', 'FB Feed', 'IG Feed', 'IG Reels'],
+    datasets: [
+      { label: 'Carrito añadido', data: [23, 16, 13, 4], backgroundColor: '#E99F2F', borderRadius: 2 },
+      { label: 'Compras', data: [5, 0, 3, 5], backgroundColor: '#5BBF8A', borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 11 }, stepSize: 5 } }
+    }
+  }
+});
+
+// Chart 3: ROAS por placement horizontal
+new Chart(document.getElementById('chartROAS'), {
+  type: 'bar',
+  data: {
+    labels: ['IG Reels', 'IG Stories', 'IG Feed', 'FB Feed'],
+    datasets: [{
+      label: 'ROAS',
+      data: [10.66, 4.15, 2.68, 0],
+      backgroundColor: ['#5BBF8A', '#5BBF8A', '#E99F2F', '#B9352E'],
+      borderRadius: 2
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 11 }, callback: v => v + 'x' }, max: 12 },
+      y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+    }
+  }
+});
+</script>
+</body>
+</html>
