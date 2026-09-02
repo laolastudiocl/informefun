@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fün Superfoods · Informe de Performance · Agosto 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{--azul:#2E3B74;--azul-dark:#181E35;--verde-dark:#1E2A1E;--amber:#E99F2F;--rojo:#B9352E;--negro:#1A1A1A;--gris:#3D3D3D;--white:#F0EDE8;--muted:#9A9A9A;--green:#5BBF8A;--blue:#7B9FE8;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--negro);color:var(--white);font-family:'Pathway Gothic One',sans-serif;font-size:16px;line-height:1.5;}
+  h1,h2,h3{font-family:'Oswald',sans-serif;}
+  .hero{background:var(--azul);border-bottom:4px solid var(--amber);padding:52px 48px 44px;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:rgba(233,159,47,.05);}
+  .badge{display:inline-block;background:rgba(233,159,47,.15);border:1px solid var(--amber);color:var(--amber);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:5px 14px;border-radius:2px;margin-bottom:14px;animation:pulse 3s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .hero-period{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(233,159,47,.75);margin-bottom:6px;}
+  .hero h1{font-size:clamp(28px,5vw,56px);font-weight:700;text-transform:uppercase;line-height:1;margin-bottom:6px;}
+  .hero-sub{color:rgba(240,237,232,.5);font-size:14px;margin-bottom:36px;}
+  .hero-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:rgba(233,159,47,.2);border:1px solid rgba(233,159,47,.2);}
+  .hkpi{background:rgba(24,30,53,.8);padding:16px 12px;text-align:center;}
+  .hkpi .lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);opacity:.8;display:block;margin-bottom:5px;}
+  .hkpi .val{font-family:'Oswald',sans-serif;font-size:19px;font-weight:700;}
+  .hkpi .val.g{color:var(--green);}.hkpi .val.r{color:var(--rojo);}.hkpi .val.a{color:var(--amber);}
+  .sec{padding:48px;}.sec.az{background:var(--azul-dark);}.sec.vd{background:var(--verde-dark);}
+  .sl{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+  .sl::before{content:'';display:block;width:3px;height:18px;background:var(--amber);}
+  .sl span{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);}
+  .st{font-size:clamp(20px,2.5vw,30px);font-weight:700;text-transform:uppercase;margin-bottom:6px;}
+  .sd{color:var(--muted);font-size:13px;margin-bottom:28px;max-width:680px;}
+  .kg{display:grid;gap:14px;margin-bottom:24px;}
+  .g6{grid-template-columns:repeat(6,1fr);}.g5{grid-template-columns:repeat(5,1fr);}.g4{grid-template-columns:repeat(4,1fr);}.g3{grid-template-columns:repeat(3,1fr);}.g2{grid-template-columns:1fr 1fr;}
+  .kpi{background:var(--gris);border-top:3px solid var(--amber);padding:18px;border-radius:2px;}
+  .kpi.g{border-top-color:var(--green);}.kpi.r{border-top-color:var(--rojo);}.kpi.b{border-top-color:var(--blue);}
+  .kpi .lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px;}
+  .kpi .val{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;line-height:1;}
+  .kpi .val.g{color:var(--green);}.kpi .val.r{color:var(--rojo);}.kpi .val.a{color:var(--amber);}
+  .kpi .sub{font-size:11px;color:var(--muted);margin-top:5px;}.kpi .delta{font-size:12px;margin-top:3px;}
+  .du{color:var(--green);}.dd{color:var(--rojo);}
+  .ins{background:rgba(46,59,116,.35);border-left:4px solid var(--amber);padding:18px 22px;margin:18px 0;border-radius:0 2px 2px 0;}
+  .ins.g{background:rgba(37,106,70,.2);border-left-color:var(--green);}.ins.r{background:rgba(185,53,46,.12);border-left-color:var(--rojo);}.ins.w{background:rgba(233,159,47,.08);border-left-color:var(--amber);}
+  .ins-t{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:7px;}
+  .ins.g .ins-t{color:var(--green);}.ins.r .ins-t{color:var(--rojo);}
+  .ins p{font-size:13px;line-height:1.75;color:rgba(240,237,232,.85);}
+  .alert{display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border-radius:2px;margin-bottom:10px;}
+  .alert.danger{background:rgba(185,53,46,.1);border-left:3px solid var(--rojo);}
+  .alert.warn{background:rgba(233,159,47,.1);border-left:3px solid var(--amber);}
+  .alert.success{background:rgba(91,191,138,.1);border-left:3px solid var(--green);}
+  .alert.info{background:rgba(123,159,232,.1);border-left:3px solid var(--blue);}
+  .alert-icon{font-size:16px;flex-shrink:0;margin-top:2px;}
+  .alert-title{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+  .alert p{font-size:12px;color:rgba(240,237,232,.75);line-height:1.6;}
+  .cg{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+  .cc{background:var(--gris);padding:22px;border-radius:2px;border-top:4px solid var(--amber);}
+  .cc.google{border-top-color:var(--amber);}.cc.meta{border-top-color:var(--green);}
+  .cc-name{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
+  .cc-name.google{color:var(--amber);}.cc-name.meta{color:var(--green);}
+  .cc-roas{font-family:'Oswald',sans-serif;font-size:46px;font-weight:700;line-height:1;margin-bottom:4px;}
+  .cc-rl{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;}
+  .cm{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .cm .l{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;}
+  .cm .v{font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;}
+  .tw{overflow-x:auto;margin:14px 0;}
+  table{width:100%;border-collapse:collapse;font-size:12px;}
+  thead th{background:rgba(233,159,47,.08);color:var(--amber);font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:9px 10px;text-align:left;border-bottom:1px solid rgba(233,159,47,.2);}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.04);}tbody tr:hover{background:rgba(255,255,255,.02);}
+  tbody td{padding:9px 10px;color:rgba(240,237,232,.8);}
+  .bg{background:rgba(91,191,138,.12);color:var(--green);padding:2px 7px;border-radius:2px;font-size:10px;font-family:'Oswald',sans-serif;}
+  .ba{background:rgba(233,159,47,.12);color:var(--amber);padding:2px 7px;border-radius:2px;font-size:10px;font-family:'Oswald',sans-serif;}
+  .br{background:rgba(185,53,46,.12);color:var(--rojo);padding:2px 7px;border-radius:2px;font-size:10px;font-family:'Oswald',sans-serif;}
+  .bb{background:rgba(123,159,232,.12);color:var(--blue);padding:2px 7px;border-radius:2px;font-size:10px;font-family:'Oswald',sans-serif;}
+  .chart-box{background:var(--gris);padding:22px;border-radius:2px;margin-bottom:16px;}
+  .chart-title{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;}
+  .prog-item{margin-bottom:12px;}
+  .prog-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
+  .prog-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+  .prog-fill{height:100%;border-radius:3px;}
+  .funnel{display:flex;flex-direction:column;gap:6px;}
+  .frow{display:flex;align-items:center;gap:12px;}
+  .flbl{width:140px;text-align:right;font-size:12px;color:var(--muted);flex-shrink:0;}
+  .fwrap{flex:1;background:rgba(255,255,255,.06);border-radius:2px;height:30px;overflow:hidden;}
+  .ffill{height:100%;display:flex;align-items:center;padding:0 12px;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;border-radius:2px;}
+  .f1{background:rgba(123,159,232,.3);color:var(--blue);}.f2{background:rgba(233,159,47,.3);color:var(--amber);}.f3{background:rgba(91,191,138,.3);color:var(--green);}
+  .farrow{font-size:10px;color:var(--amber);margin:1px 0 1px 152px;opacity:.5;}
+  .ag{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .ac{background:var(--gris);padding:20px;border-radius:2px;border-left:4px solid;}
+  .ac.r{border-left-color:var(--rojo);}.ac.a{border-left-color:var(--amber);}.ac.g{border-left-color:var(--green);}.ac.b{border-left-color:var(--blue);}
+  .ap{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'Oswald',sans-serif;opacity:.8;margin-bottom:5px;}
+  .at{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;margin-bottom:7px;}
+  .ad{font-size:12px;color:rgba(240,237,232,.7);line-height:1.65;margin-bottom:7px;}
+  .ai{font-size:10px;font-family:'Oswald',sans-serif;letter-spacing:1px;text-transform:uppercase;}
+  .pj{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .pc{background:var(--gris);padding:24px;border-radius:2px;}
+  .pt{font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px;}
+  .ps{font-size:11px;color:var(--muted);margin-bottom:16px;}
+  .pm{display:grid;gap:10px;}
+  .pm .l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+  .pm .v{font-family:'Oswald',sans-serif;font-size:20px;}
+  .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;}
+  footer{background:var(--azul);border-top:4px solid var(--amber);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  footer .logo{font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;}
+  footer .info{font-size:11px;color:rgba(240,237,232,.45);text-align:right;}
+  @media(max-width:900px){.hero{padding:36px 20px 28px;}.sec{padding:36px 20px;}.hero-kpis{grid-template-columns:repeat(3,1fr);}.g6,.g5,.g4,.g3{grid-template-columns:repeat(2,1fr);}.cg,.ag,.pj,.demo-grid{grid-template-columns:1fr;}footer{padding:24px 20px;}footer .info{text-align:left;}}
+  @media(max-width:500px){.hero-kpis{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">La Ola Studio · Informe de Performance</div>
+  <div class="hero-period">Agosto 2026 · Meta Ads · Google Ads · SEO · GA4 · Instagram</div>
+  <h1>Fün Superfoods<br>Agosto 2026</h1>
+  <div class="hero-sub">Período: 1–31 agosto 2026 · Primer mes con datos de GA4 · Datos reales de todos los canales</div>
+  <div class="hero-kpis">
+    <div class="hkpi"><span class="lbl">Inversión Total</span><span class="val">$315.107</span></div>
+    <div class="hkpi"><span class="lbl">Ingresos B2C Meta</span><span class="val">$122.491</span></div>
+    <div class="hkpi"><span class="lbl">ROAS Meta B2C</span><span class="val a">1.08x</span></div>
+    <div class="hkpi"><span class="lbl">Usuarios GA4</span><span class="val g">1.500</span></div>
+    <div class="hkpi"><span class="lbl">Clics SEO</span><span class="val g">306</span></div>
+    <div class="hkpi"><span class="lbl">Seg. IG</span><span class="val g">12.958</span></div>
+  </div>
+</section>
+
+<!-- 01 RESUMEN EJECUTIVO -->
+<section class="sec az">
+  <div class="sl"><span>01 · Resumen Ejecutivo</span></div>
+  <h2 class="st">Estado del Mes</h2>
+
+  <div class="alert info">
+    <div class="alert-icon">ℹ️</div>
+    <div><div class="alert-title">Nota metodológica — Google Ads agosto</div><p>P.Max Gregorio operó con estado "Apta limitada por presupuesto" e invirtió $201.727. Registró 81 conversiones de tipo micro (clics a WhatsApp, visitas a páginas clave, etc.) con un valor total de $132 CLP — sin compras e-commerce directas atribuidas. El ROAS se reporta como 0x para compras; el canal aportó tráfico cualificado (935 clics, CTR 4,95%) que derivó en sesiones y visitas a la página de Mayoristas.</p></div>
+  </div>
+
+  <p class="sd">Agosto fue un mes de transición: inversión reducida en Meta (−67% vs julio), sin pauta B2B, y Google Ads enfocado en captura de tráfico sin conversiones directas. El lado positivo está en el orgánico: el SEO creció por segundo mes consecutivo (306 clics), la demografía de la audiencia quedó documentada por primera vez, y el reel "¿Sabes qué formato de açaí le conviene a tu negocio?" —con enfoque B2B— fue el contenido individual más eficiente del mes con 9 seguidores nuevos desde un solo video.</p>
+
+  <div class="kg g6">
+    <div class="kpi"><span class="lbl">ROAS Meta B2C</span><div class="val a">1.08x</div><div class="delta dd">↓ vs jul 1.30x</div><div class="sub">Con menor inversión, resultado similar</div></div>
+    <div class="kpi"><span class="lbl">Ingresos B2C Meta</span><div class="val">$122.491</div><div class="delta dd">↓ vs jul $445.171 (−72%)</div><div class="sub">Refleja reducción de pauta, no caída de conversión</div></div>
+    <div class="kpi"><span class="lbl">Inversión Total</span><div class="val">$315.107</div><div class="delta du">↓ vs jul $591.821 (−47%)</div><div class="sub">Meta $113K · Google $201K</div></div>
+    <div class="kpi g"><span class="lbl">Usuarios GA4</span><div class="val g">1.500</div><div class="sub">Google/cpc lidera · Mayoristas: pág. más visitada</div></div>
+    <div class="kpi g"><span class="lbl">Clics SEO</span><div class="val g">306</div><div class="delta du">↑ vs jul 297 (+3%)</div><div class="sub">2do mes consecutivo en alza</div></div>
+    <div class="kpi g"><span class="lbl">Seg. IG netos</span><div class="val">+9</div><div class="sub">12.958 total · demografía documentada</div></div>
+  </div>
+
+  <div class="ins w">
+    <div class="ins-t">⚡ Lectura estratégica</div>
+    <p>Agosto es un mes de menor actividad pagada, pero entrega información valiosa. Los datos de GA4 por primera vez revelan que la página de Mayoristas es la más visitada del sitio (494 vistas, 384 usuarios), confirmando una demanda B2B activa que llega sola a través de Google. La demografía de Instagram —mujeres 35–44 como audiencia core (44%)— es el dato de audiencia más preciso que se ha tenido hasta ahora y debe guiar la producción creativa de septiembre. El reel con enfoque B2B ("¿Sabes qué formato de açaí le conviene a tu negocio?") fue el contenido más eficiente en captación de seguidores del mes, validando la dirección para reactivar ese canal en pauta.</p>
+  </div>
+</section>
+
+<!-- 02 COMPARATIVA JUL vs AGO -->
+<section class="sec vd">
+  <div class="sl"><span>02 · Comparativa Julio vs Agosto</span></div>
+  <h2 class="st">Evolución Mensual</h2>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Métrica</th><th>Julio 2026</th><th>Agosto 2026</th><th>Δ</th><th>Contexto</th></tr></thead>
+      <tbody>
+        <tr><td>Inversión total paid</td><td>$591.821</td><td>$315.107</td><td><span class="bg">−46,8%</span></td><td>Reducción deliberada de pauta</td></tr>
+        <tr><td>Inversión Meta</td><td>$341.545</td><td>$113.380</td><td><span class="ba">−66,8%</span></td><td>Solo campaña Ventas permanente activa</td></tr>
+        <tr><td>Inversión Google</td><td>$250.276</td><td>$201.727</td><td><span class="ba">−19,4%</span></td><td>P.Max limitada por presupuesto</td></tr>
+        <tr><td>Ingresos B2C Meta</td><td>$445.171</td><td>$122.491</td><td><span class="br">−72,5%</span></td><td>Proporcional a la reducción de inversión</td></tr>
+        <tr><td>Compras B2C Meta</td><td>35</td><td>8</td><td><span class="br">−77,1%</span></td><td>Ticket prom. ago: $15.311 vs jul $12.719</td></tr>
+        <tr><td>ROAS Meta B2C</td><td>1.30x</td><td>1.08x</td><td><span class="ba">−16,9%</span></td><td>Estable considerando menor volumen</td></tr>
+        <tr><td>CPA Meta B2C</td><td>$9.758</td><td>$14.172</td><td><span class="br">+45,2%</span></td><td>Sube por menor volumen de compras</td></tr>
+        <tr><td>Val. carrito Meta</td><td>$4.142.510</td><td>$722.180</td><td><span class="bg">−82,6%</span></td><td>Menor alcance = menos carritos</td></tr>
+        <tr><td>Compras Google</td><td>0</td><td>0</td><td>—</td><td>P.Max genera tráfico, sin atrib. directa</td></tr>
+        <tr><td>Clics SEO</td><td>297</td><td>306</td><td><span class="bg">+3,0%</span></td><td>2do mes consecutivo de crecimiento</td></tr>
+        <tr><td>Seg. IG nuevos netos</td><td>107</td><td>9</td><td><span class="br">−91,6%</span></td><td>Menor pauta = menos exposición</td></tr>
+        <tr><td>Usuarios GA4</td><td>N/D</td><td>1.500</td><td>—</td><td>Primer mes con dato disponible</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ins">
+    <div class="ins-t">→ La reducción de inversión explica los números</div>
+    <p>La caída de ingresos de $445.171 (julio) a $122.491 (agosto) es proporcional a la reducción de inversión en Meta (−67%). El ROAS en realidad se mantiene relativamente estable entre ambos meses (1.30x → 1.08x), lo que indica que el canal no empeoró en eficiencia — simplemente hubo menos combustible. Esto es relevante: cuando se reactivé la inversión con creativos renovados, el canal tiene base para recuperar el volumen.</p>
+  </div>
+</section>
+
+<!-- 03 PAID MEDIA -->
+<section class="sec az">
+  <div class="sl"><span>03 · Desempeño Paid Media por Canal</span></div>
+  <h2 class="st">Google Ads + Meta Ads — Agosto 2026</h2>
+
+  <div class="cg">
+    <div class="cc google">
+      <div class="cc-name google">Google Ads — P.Max Gregorio</div>
+      <div class="cc-roas" style="color:var(--muted)">≈ 0x</div>
+      <div class="cc-rl">ROAS compras e-commerce · estado: apta limitada</div>
+      <div class="cm">
+        <div><span class="l">Inversión</span><span class="v">$201.727</span></div>
+        <div><span class="l">Clics</span><span class="v">935</span></div>
+        <div><span class="l">Impresiones</span><span class="v">18.881</span></div>
+        <div><span class="l">CTR</span><span class="v">4,95%</span></div>
+        <div><span class="l">Conv. (micro)</span><span class="v">81</span></div>
+        <div><span class="l">Compras directas</span><span class="v">0</span></div>
+        <div><span class="l">CPC promedio</span><span class="v">$216</span></div>
+        <div><span class="l">CPA micro-conv.</span><span class="v">$2.490</span></div>
+      </div>
+      <div class="ins" style="margin-top:0;padding:12px 16px;">
+        <div class="ins-t">→ Rol Google en agosto</div>
+        <p style="font-size:12px;">Google generó 518 sesiones (según GA4, la mayor fuente de tráfico pagado), con la página de Mayoristas como la más visitada del sitio. El canal está funcionando como captador de tráfico B2B, pero sin conversiones de compra directas atribuidas. La campaña opera "limitada por presupuesto" — aumentar el presupuesto diario podría mejorar la cobertura.</p>
+      </div>
+    </div>
+
+    <div class="cc meta">
+      <div class="cc-name meta">Meta Ads — Ventas permanente</div>
+      <div class="cc-roas" style="color:var(--amber)">1.08x</div>
+      <div class="cc-rl">ROAS B2C · sin campaña B2B activa</div>
+      <div class="cm">
+        <div><span class="l">Inversión</span><span class="v">$113.380</span></div>
+        <div><span class="l">Ingresos B2C</span><span class="v">$122.491</span></div>
+        <div><span class="l">Compras</span><span class="v">8</span></div>
+        <div><span class="l">CPA</span><span class="v">$14.172</span></div>
+        <div><span class="l">Alcance</span><span class="v">11.913</span></div>
+        <div><span class="l">Impresiones</span><span class="v">24.333</span></div>
+        <div><span class="l">Carrito añadido</span><span class="v">67</span></div>
+        <div><span class="l">Val. carrito</span><span class="v">$722.180</span></div>
+      </div>
+      <div class="ins" style="margin-top:0;padding:12px 16px;">
+        <div class="ins-t">→ Contexto Meta</div>
+        <p style="font-size:12px;">El mes operó con inversión mínima y creativos en etapa de fatiga. Con solo $113.380 el canal generó $122.491 — un margen estrecho pero que muestra que aún hay conversión residual. La frecuencia de 2.04 indica que la audiencia ya ha visto los anuncios más de dos veces en promedio, señal de que hay que renovar creativos para ampliar el alcance efectivo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 ANUNCIOS B2C -->
+<section class="sec vd">
+  <div class="sl"><span>04 · Análisis Creativo Meta Ads — B2C</span></div>
+  <h2 class="st">Performance por Anuncio · Agosto 2026</h2>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Anuncio</th><th>Inversión</th><th>Impr.</th><th>CTR</th><th>Carrito</th><th>Val. carrito</th><th>Compras</th><th>Ingresos</th><th>ROAS</th><th>CPA</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Video Pitaya sexy</strong></td><td>$68.951</td><td>14.080</td><td>1,07%</td><td>41</td><td>$508.300</td><td>4</td><td>$108.518</td><td><span class="ba">1.57x</span></td><td>$17.238</td></tr>
+        <tr><td><strong>Video Pineado del perfil</strong></td><td>$35.986</td><td>8.248</td><td>1,44%</td><td>26</td><td>$213.880</td><td>4</td><td>$13.973</td><td><span class="br">0.39x</span></td><td>$8.996</td></tr>
+        <tr><td>Catálogo</td><td>$5.452</td><td>1.306</td><td>0,77%</td><td>0</td><td>$0</td><td>0</td><td>$0</td><td><span class="br">0x</span></td><td>—</td></tr>
+        <tr><td>Smoothie sexy</td><td>$2.991</td><td>699</td><td>0,72%</td><td>0</td><td>$0</td><td>0</td><td>$0</td><td><span class="br">0x</span></td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-title">Evolución ROAS — Anuncios principales (may → ago 2026)</div>
+    <div style="position:relative;width:100%;height:210px;"><canvas id="chartAdsEvol"></canvas></div>
+  </div>
+
+  <div class="kg g3" style="margin-top:16px;">
+    <div class="kpi"><span class="lbl">Mejor anuncio del mes</span><div class="val a" style="font-size:20px;">Video Pitaya sexy</div><div class="sub">ROAS 1.57x · Único con conversiones positivas. Las 41 unidades en carrito ($508.300) sugieren audiencia interesada que no completó la compra.</div></div>
+    <div class="kpi r"><span class="lbl">A pausar</span><div class="val" style="font-size:20px;">Video Pineado</div><div class="sub">ROAS 0.39x con $35.986 invertidos. Por cada $1 invertido se recuperan $0.39. Los 26 carritos ($213.880) indican interés, pero no se convierte en compra.</div></div>
+    <div class="kpi b"><span class="lbl">Oportunidad de datos</span><div class="val" style="font-size:20px;">$722.180 en carrito</div><div class="sub">67 carritos sin recuperación activa. Con un flujo básico de email abandono, parte de ese valor es recuperable sin más inversión en pauta.</div></div>
+  </div>
+
+  <div class="ins">
+    <div class="ins-t">→ Diagnóstico creativo</div>
+    <p>Video Pitaya sexy mantiene una conversión residual (1.57x) que confirma que el concepto del video todavía tiene tracción — el problema es la saturación de audiencia más que el creativo en sí. Una variante del mismo concepto con diferente hook o enfoque podría reactivar el rendimiento. El Video Pineado, en cambio, muestra una disociación entre interés (26 carritos) y compra (4 pedidos) que no se resuelve con más presupuesto. Agosto es el momento ideal para producir contenido nuevo con la información demográfica recién disponible: mujeres 35–44 años, con interés en salud y bienestar.</p>
+  </div>
+</section>
+
+<!-- 05 GA4 — NUEVO -->
+<section class="sec az">
+  <div class="sl"><span>05 · Google Analytics 4 — Primer Mes</span></div>
+  <h2 class="st">Comportamiento del Sitio Web · Agosto 2026</h2>
+  <p class="sd">Primera vez que se dispone de este dato. Período: 1–31 agosto 2026.</p>
+
+  <div class="kg g4">
+    <div class="kpi g"><span class="lbl">Usuarios activos</span><div class="val g">1.500</div><div class="sub">93% son usuarios nuevos (1.400)</div></div>
+    <div class="kpi"><span class="lbl">Usuarios recurrentes</span><div class="val">144</div><div class="sub">9,6% de tasa de retorno — margen para mejorar</div></div>
+    <div class="kpi"><span class="lbl">Tiempo de interacción</span><div class="val">37s</div><div class="sub">Tiempo promedio por usuario activo</div></div>
+    <div class="kpi"><span class="lbl">Eventos totales</span><div class="val">8.700</div><div class="sub">Interacciones en el sitio</div></div>
+  </div>
+
+  <div class="cg">
+    <div class="chart-box" style="margin-bottom:0;">
+      <div class="chart-title">Sesiones por Fuente — Agosto 2026</div>
+      <div class="tw" style="margin:0;">
+        <table>
+          <thead><tr><th>Fuente / Medio</th><th>Sesiones</th><th>Usuarios activos</th></tr></thead>
+          <tbody>
+            <tr><td>Google / CPC</td><td>518</td><td>455</td></tr>
+            <tr><td>Google / Orgánico</td><td>420</td><td>323</td></tr>
+            <tr><td>Directo</td><td>324</td><td>322</td></tr>
+            <tr><td>IG / Paid</td><td>240</td><td>209</td></tr>
+            <tr><td>IG / Social (orgánico)</td><td>56</td><td>48</td></tr>
+            <tr><td>FB / Paid</td><td>27</td><td>23</td></tr>
+            <tr><td>m.facebook.com</td><td>20</td><td>18</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="chart-box" style="margin-bottom:0;">
+      <div class="chart-title">Top Páginas por Vistas — Agosto 2026</div>
+      <div class="tw" style="margin:0;">
+        <table>
+          <thead><tr><th>Página</th><th>Vistas</th><th>Usuarios</th><th>Rebote</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mayoristas ★</strong></td><td><strong>494</strong></td><td><strong>384</strong></td><td>49,4%</td></tr>
+            <tr><td>Tienda</td><td>348</td><td>193</td><td>33,6%</td></tr>
+            <tr><td>Home</td><td>317</td><td>231</td><td>31,6%</td></tr>
+            <tr><td>Pulpa de pitaya</td><td>267</td><td>216</td><td>50,6%</td></tr>
+            <tr><td>Pulpa de açaí puro</td><td>256</td><td>190</td><td>37,0%</td></tr>
+            <tr><td>Pitaya blend 473ml</td><td>215</td><td>158</td><td>62,4%</td></tr>
+            <tr><td>Finalizar compra</td><td>110</td><td>67</td><td>16,8%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="kg g2" style="margin-top:16px;">
+    <div class="kpi b">
+      <span class="lbl">Ciudades principales</span>
+      <div style="margin-top:8px;">
+        <div class="prog-item"><div class="prog-top"><span>Santiago</span><span>824 usuarios</span></div><div class="prog-bar"><div class="prog-fill" style="width:100%;background:var(--blue);"></div></div></div>
+        <div class="prog-item"><div class="prog-top"><span>Concepción</span><span>57</span></div><div class="prog-bar"><div class="prog-fill" style="width:7%;background:var(--blue);"></div></div></div>
+        <div class="prog-item"><div class="prog-top"><span>Antofagasta</span><span>47</span></div><div class="prog-bar"><div class="prog-fill" style="width:5.7%;background:var(--blue);"></div></div></div>
+        <div class="prog-item"><div class="prog-top"><span>Viña del Mar</span><span>47</span></div><div class="prog-bar"><div class="prog-fill" style="width:5.7%;background:var(--blue);"></div></div></div>
+        <div class="prog-item" style="margin-bottom:0;"><div class="prog-top"><span>Temuco</span><span>30</span></div><div class="prog-bar"><div class="prog-fill" style="width:3.6%;background:var(--blue);"></div></div></div>
+      </div>
+    </div>
+    <div class="kpi g">
+      <span class="lbl">★ Hallazgo clave: página Mayoristas</span>
+      <div class="val g" style="font-size:20px;margin-top:8px;">494 vistas</div>
+      <div class="sub" style="font-size:12px;margin-top:8px;line-height:1.6;">La página de Mayoristas es la más visitada del sitio, superando incluso a la Tienda (348 vistas). Con 384 usuarios únicos y 49,4% de rebote, hay tráfico B2B real llegando al sitio —principalmente desde Google CPC y Directo— que no está siendo capturado por ninguna campaña activa. Esto es una oportunidad concreta: un formulario de contacto optimizado o un CTA más claro en esa página podría convertir esa demanda existente.</div>
+    </div>
+  </div>
+
+  <div class="ins g">
+    <div class="ins-t">→ Lo que GA4 dice sobre el funnel</div>
+    <p>La página "Finalizar compra" tuvo 110 vistas con solo 67 usuarios únicos — y un rebote de apenas 16,8%, el más bajo del sitio. Eso significa que quienes llegan al checkout tienen alta intención de compra. El cuello de botella no está en el cierre sino en llevar más personas al carrito. El tráfico directo (324 sesiones) sugiere un volumen importante de clientes que ya conocen la marca y van directamente al sitio — base de clientes recurrentes que podría activarse con email marketing o comunicaciones directas.</p>
+  </div>
+</section>
+
+<!-- 06 SEO -->
+<section class="sec vd">
+  <div class="sl"><span>06 · SEO — Tráfico Orgánico</span></div>
+  <h2 class="st">Google Search Console · Agosto 2026</h2>
+  <p class="sd">Clics e impresiones de agosto aislados del gráfico diario. Consultas y páginas son acumuladas del período jun-ago 2026.</p>
+
+  <div class="kg g4">
+    <div class="kpi g"><span class="lbl">Clics orgánicos</span><div class="val g">306</div><div class="delta du">↑ vs jul 297 (+3%)</div><div class="sub">2do mes consecutivo en crecimiento</div></div>
+    <div class="kpi g"><span class="lbl">Impresiones</span><div class="val g">28.642</div><div class="delta du">↑ vs jul 23.971 (+19,5%)</div><div class="sub">Mayor visibilidad en búsquedas</div></div>
+    <div class="kpi"><span class="lbl">CTR ponderado</span><div class="val">1,07%</div><div class="delta dd">↓ vs jul 1,24%</div><div class="sub">Más impresiones diluyen el CTR</div></div>
+    <div class="kpi"><span class="lbl">Posición media</span><div class="val">8,6</div><div class="delta">= jul 8,6 (estable)</div></div>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-title">Evolución Clics Orgánicos — 16 Meses (may 25 → ago 26)</div>
+    <div style="position:relative;width:100%;height:180px;"><canvas id="chartSEO"></canvas></div>
+  </div>
+
+  <div class="kg g2">
+    <div class="chart-box" style="margin-bottom:0;">
+      <div class="chart-title">Top Keywords (acum. jun-ago 2026)</div>
+      <div class="tw" style="margin:0;">
+        <table>
+          <thead><tr><th>#</th><th>Keyword</th><th>Clics</th><th>CTR</th><th>Pos.</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>fun superfoods</td><td>56</td><td>61,54%</td><td>1,5</td></tr>
+            <tr><td>2</td><td>acai fruta</td><td>45</td><td>1,01%</td><td>4,7</td></tr>
+            <tr><td>3</td><td>acai</td><td>43</td><td>0,16%</td><td>10,4</td></tr>
+            <tr><td>4</td><td>pitahaya chile</td><td>18</td><td>1,76%</td><td>5,5</td></tr>
+            <tr><td>5</td><td>pitaya chile</td><td>18</td><td>1,92%</td><td>5,4</td></tr>
+            <tr><td>6</td><td><strong>acai por mayor</strong></td><td>15</td><td>8,62%</td><td>10,3</td></tr>
+            <tr><td>7</td><td>acai congelado</td><td>10</td><td>3,08%</td><td>3,7</td></tr>
+            <tr><td>8</td><td>acai sin azucar</td><td>9</td><td>4,97%</td><td>2,5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="chart-box" style="margin-bottom:0;">
+      <div class="chart-title">Top Páginas (acum. jun-ago 2026)</div>
+      <div class="tw" style="margin:0;">
+        <table>
+          <thead><tr><th>Página</th><th>Clics</th><th>CTR</th><th>Pos.</th></tr></thead>
+          <tbody>
+            <tr><td>/pulpa-de-pitaya/</td><td>272</td><td>1,13%</td><td>8,3</td></tr>
+            <tr><td>/pulpa-de-acai/</td><td>225</td><td>0,76%</td><td>7,9</td></tr>
+            <tr><td>/ (home)</td><td>202</td><td>8,53%</td><td>12,9</td></tr>
+            <tr><td>/acai-big-box/</td><td>54</td><td>0,80%</td><td>10,1</td></tr>
+            <tr><td>/blend-de-acai/</td><td>50</td><td>0,79%</td><td>9,2</td></tr>
+            <tr><td><strong>/acai-para-maquina-soft/</strong></td><td>20</td><td>20,00%</td><td>4,6</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="ins g">
+    <div class="ins-t">★ Dos señales positivas en SEO</div>
+    <p>1. La página /acai-para-maquina-soft/ aparece por primera vez en el top con CTR de 20% en posición 4,6 — un producto de nicho B2B con alta intención de compra que se posicionó solo. Confirma que hay demanda de máquinas de soft serve. 2. "Acai por mayor" acumula CTR 8,62% en posición 10,3 — con tres meses de datos consecutivos mostrando alta intención, el argumento para una campaña Search o una landing específica B2B es cada vez más sólido.</p>
+  </div>
+</section>
+
+<!-- 07 INSTAGRAM -->
+<section class="sec az">
+  <div class="sl"><span>07 · Redes Sociales Orgánicas</span></div>
+  <h2 class="st">Instagram · Agosto 2026</h2>
+  <p class="sd">Período: 1–31 agosto 2026. Contenido: 1 reel · 4 publicaciones · 12 historias. Primer mes con datos de demografía de seguidores.</p>
+
+  <div class="kg g4">
+    <div class="kpi"><span class="lbl">Visualizaciones totales</span><div class="val">39.054</div><div class="delta dd">↓ vs jul 119.707 (−67%)</div><div class="sub">68,3% anuncios · 31,7% orgánico</div></div>
+    <div class="kpi"><span class="lbl">Espectadores únicos</span><div class="val">13.724</div><div class="delta dd">↓ vs jul 30.161 (−54,5%)</div><div class="sub">Proporcional a menor pauta</div></div>
+    <div class="kpi"><span class="lbl">Seguidores totales</span><div class="val">12.958</div><div class="delta">+9 netos en el mes</div><div class="sub">136 nuevos · 127 bajas</div></div>
+    <div class="kpi"><span class="lbl">Viz. orgánicas reels+posts</span><div class="val">12.000</div><div class="delta dd">↓ vs jul 17.000 (−29%)</div><div class="sub">Consistent con menos publicaciones</div></div>
+  </div>
+
+  <div class="kg g3" style="margin-top:0;">
+    <div class="kpi r"><span class="lbl">Actividad del perfil</span><div class="val r">525</div><div class="delta dd">↓ vs jul 980 (−46%)</div><div class="sub">Visitas: 457 · Link: 68</div></div>
+    <div class="kpi"><span class="lbl">Interacciones (Reels)</span><div class="val">Reels 52,7%</div><div class="sub">Me gusta 96 · Comentarios 31 · Guardado 9 · Compartido 13 · Reposts 13</div></div>
+    <div class="kpi b"><span class="lbl">% No seguidores</span><div class="val b">29%</div><div class="sub">Visualizaciones de audiencia nueva · 62,5% del total son no seguidores</div></div>
+  </div>
+
+  <!-- Top contenido -->
+  <div class="tw">
+    <table>
+      <thead><tr><th>Formato</th><th>Contenido</th><th>Fecha</th><th>Visualizaciones</th><th>Seguidores nuevos</th></tr></thead>
+      <tbody>
+        <tr><td><span class="bg">Reel</span></td><td>¿Sabes qué formato de açaí le conviene a tu negocio? <strong>(B2B)</strong></td><td>13 ago</td><td>2.300</td><td><strong>9 ★</strong></td></tr>
+        <tr><td><span class="ba">Publicación</span></td><td>Bowl de açaí con toppings</td><td>5 ago</td><td>2.200</td><td>—</td></tr>
+        <tr><td><span class="ba">Publicación</span></td><td>Tu próximo smoothie</td><td>16 ago</td><td>1.700</td><td>—</td></tr>
+        <tr><td><span class="ba">Publicación</span></td><td>Mujer con gato / lifestyle</td><td>22 ago</td><td>1.200</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Demografía -->
+  <div class="demo-grid">
+    <div class="chart-box" style="margin-bottom:0;">
+      <div class="chart-title">★ Demografía seguidores — Primer dato disponible</div>
+      <div style="margin-top:8px;">
+        <div class="prog-item"><div class="prog-top"><span><strong>35–44 años</strong></span><span style="color:var(--amber);font-family:'Oswald',sans-serif;">44,0%</span></div><div class="prog-bar"><div class="prog-fill" style="width:44%;background:var(--amber);"></div></div></div>
+        <div class="prog-item"><div class="prog-top"><span><strong>25–34 años</strong></span><span style="color:var(--green);">34,4%</span></div><div class="prog-bar"><div class="prog-fill" style="width:34.4%;background:var(--green);"></div></div></div>
+        <div class="prog-item"><div class="prog-top"><span>45–54 años</span><span>13,9%</span></div><div class="prog-bar"><div class="prog-fill" style="width:13.9%;background:var(--blue);"></div></div></div>
+        <div class="prog-item"><div class="prog-top"><span>55–64 años</span><span>3,6%</span></div><div class="prog-bar"><div class="prog-fill" style="width:3.6%;background:var(--muted);"></div></div></div>
+        <div class="prog-item" style="margin-bottom:0;"><div class="prog-top"><span>18–24 años</span><span>2,8%</span></div><div class="prog-bar"><div class="prog-fill" style="width:2.8%;background:var(--muted);"></div></div></div>
+      </div>
+    </div>
+    <div class="chart-box" style="margin-bottom:0;">
+      <div class="chart-title">Sexo y audiencia core</div>
+      <div style="margin-top:12px;">
+        <div class="prog-item"><div class="prog-top"><span>Mujeres</span><span style="color:var(--green);font-family:'Oswald',sans-serif;font-size:18px;">82,5%</span></div><div class="prog-bar"><div class="prog-fill" style="width:82.5%;background:var(--green);"></div></div></div>
+        <div class="prog-item"><div class="prog-top"><span>Hombres</span><span>17,5%</span></div><div class="prog-bar"><div class="prog-fill" style="width:17.5%;background:var(--muted);"></div></div></div>
+      </div>
+      <div class="ins g" style="margin:16px 0 0;">
+        <div class="ins-t">→ Audiencia core</div>
+        <p style="font-size:12px;">Mujeres de 25–44 años representan aproximadamente el 78% de los seguidores. Este dato, disponible por primera vez, debe guiar la producción creativa de septiembre: tono, estética y problemas que resuelve el producto deben estar alineados con esta audiencia.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ins g">
+    <div class="ins-t">★ El reel B2B fue el mejor contenido del mes</div>
+    <p>"¿Sabes qué formato de açaí le conviene a tu negocio?" generó los 9 seguidores nuevos netos del mes — todos captados por un solo video con enfoque B2B. Esto confirma dos cosas: hay audiencia B2B en Instagram que responde a contenido de este tipo, y el canal orgánico puede ser una vía de entrada para leads B2B sin necesitar pauta. El formato video cara a cámara con pregunta directa al negocio es un modelo replicable.</p>
+  </div>
+</section>
+
+<!-- 08 TENDENCIAS -->
+<section class="sec vd">
+  <div class="sl"><span>08 · Tendencias Históricas</span></div>
+  <h2 class="st">Evolución 11 Meses · Oct 25 – Ago 26</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="chart-box"><div class="chart-title">ROAS Meta B2C — Evolución</div><div style="position:relative;height:210px;"><canvas id="chartROAS"></canvas></div></div>
+    <div class="chart-box"><div class="chart-title">Inversión vs Ingresos B2C</div><div style="position:relative;height:210px;"><canvas id="chartRevInv"></canvas></div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+    <div class="chart-box"><div class="chart-title">Clics SEO — 16 meses</div><div style="position:relative;height:210px;"><canvas id="chartSEO2"></canvas></div></div>
+    <div class="chart-box"><div class="chart-title">Evolución ROAS anuncios principales</div><div style="position:relative;height:210px;"><canvas id="chartAds2"></canvas></div></div>
+  </div>
+
+  <div class="ins">
+    <div class="ins-t">📈 Patrón histórico visible</div>
+    <p>El ROAS Meta B2C lleva 4 meses consecutivos por debajo de 2x (may: 1.89x → jun: 2.77x → jul: 1.30x → ago: 1.08x). El SEO, en cambio, muestra su primera tendencia positiva sostenida desde febrero: dos meses seguidos de crecimiento en clics (297 → 306) y un aumento de impresiones que apunta a mejor visibilidad. La coincidencia de menor inversión pagada con crecimiento orgánico sugiere que hay oportunidad de reorientar parte del presupuesto hacia SEO y contenido orgánico mientras se renueva el stack creativo de paid media.</p>
+  </div>
+</section>
+
+<!-- 09 ALERTAS -->
+<section class="sec az">
+  <div class="sl"><span>09 · Alertas y Diagnóstico</span></div>
+  <h2 class="st">Semáforo del Mes</h2>
+
+  <div class="alert warn"><div class="alert-icon">⚠️</div><div><div class="alert-title">ATENCIÓN — ROAS Meta 1.08x con creativos en agotamiento</div><p>Los dos anuncios activos con presupuesto relevante llevan 3–4 meses de vida. Video Pitaya sexy mantiene 1.57x, que es el resultado menos malo de ambos. Video Pineado cerró con 0.39x. La renovación creativa es la palanca más directa disponible para recuperar eficiencia.</p></div></div>
+
+  <div class="alert warn"><div class="alert-icon">⚠️</div><div><div class="alert-title">ATENCIÓN — Google Ads sin compras atribuidas en agosto</div><p>P.Max invirtió $201.727 con 81 micro-conversiones y 0 compras e-commerce. El canal genera tráfico —518 sesiones según GA4— pero la atribución de compras no está conectada. Vale revisar si las conversiones configuradas en Google Ads incluyen el evento de compra del e-commerce correctamente.</p></div></div>
+
+  <div class="alert warn"><div class="alert-icon">⚠️</div><div><div class="alert-title">ATENCIÓN — B2B sin campaña activa: tercer mes sin leads</div><p>Jun: 8 leads, Jul: 0, Ago: 0. La demanda B2B existe — lo demuestra la página de Mayoristas (la más visitada del sitio) y el reel B2B orgánico con 9 seguidores. El canal necesita reactivarse con un creativo nuevo, no con los mismos formatos que se agotaron en abril y junio.</p></div></div>
+
+  <div class="alert success"><div class="alert-icon">✅</div><div><div class="alert-title">POSITIVO — SEO: segundo mes consecutivo en crecimiento</div><p>306 clics (+3% vs julio) con 28.642 impresiones (+19,5%). La tendencia de caída que duró desde febrero hasta junio se detuvo. Dos meses consecutivos en positivo son una señal real de recuperación.</p></div></div>
+
+  <div class="alert success"><div class="alert-icon">✅</div><div><div class="alert-title">POSITIVO — Demografía documentada por primera vez</div><p>Mujeres 35–44 años = 44% de la audiencia. Mujeres 25–44 = ~78%. Este dato cambia la base sobre la que se producen los creativos. No es un dato menor: muchos meses de pauta se han producido sin saber con precisión a quién se habla.</p></div></div>
+
+  <div class="alert success"><div class="alert-icon">✅</div><div><div class="alert-title">POSITIVO — Página Mayoristas: la más visitada del sitio</div><p>494 vistas, 384 usuarios, superando a la Tienda. Hay demanda B2B orgánica activa llegando al sitio que ninguna campaña pagada está capturando. Un formulario de contacto optimizado o un CTA más claro en esa página podría convertir tráfico existente en leads reales.</p></div></div>
+
+  <div class="alert info"><div class="alert-icon">💡</div><div><div class="alert-title">OPORTUNIDAD — /acai-para-maquina-soft/ con CTR 20%</div><p>Esta página apareció por primera vez en el top SEO con posición 4,6 y CTR del 20%. Es un producto de nicho B2B (máquinas de soft serve) con demanda real desde Google. Vale revisarla: si el contenido y el precio están claros, puede convertirse en un generador de leads B2B con cero inversión pagada.</p></div></div>
+</section>
+
+<!-- 10 PLAN DE ACCIÓN -->
+<section class="sec vd">
+  <div class="sl"><span>10 · Plan de Acción — Septiembre 2026</span></div>
+  <h2 class="st">Prioridades Concretas</h2>
+
+  <div class="ag">
+    <div class="ac a">
+      <div class="ap" style="color:var(--amber);">🟡 Alta prioridad — Primera semana</div>
+      <div class="at">Producir creativos B2C para mujeres 35–44</div>
+      <div class="ad">Con la demografía documentada por primera vez, septiembre es el primer mes con la información necesaria para producir contenido dirigido al público real. Formatos propuestos basados en lo que ha funcionado históricamente: carrusel educacional con gancho de pregunta (tipo "¿Por qué el açaí es casi negro?") y video lifestyle en cocina o desayuno con protagonista femenina en el rango de edad del core audience. Los creativos actuales se dirigen a un público genérico — afinar esto puede mejorar el ROAS sin cambiar la inversión.</div>
+      <div class="ai" style="color:var(--amber);">Meta: ROAS Meta B2C &gt;2.5x con creativos renovados</div>
+    </div>
+    <div class="ac a">
+      <div class="ap" style="color:var(--amber);">🟡 Alta prioridad — Primera semana</div>
+      <div class="at">Reactivar canal B2B con nuevo creativo</div>
+      <div class="ad">El reel orgánico "¿Sabes qué formato de açaí le conviene a tu negocio?" fue el mejor contenido del mes con 9 seguidores nuevos. Es el punto de partida ideal para el nuevo creativo B2B pagado: mismo concepto, mismo formato video cara a cámara, misma pregunta directa al negocio — pero optimizado para conversión de lead (formulario instantáneo de Meta). El creativo B2B anterior se puede rotar con este nuevo para testear CPL.</div>
+      <div class="ai" style="color:var(--amber);">Meta: CPL &lt;$6.000 con formato validado orgánicamente</div>
+    </div>
+    <div class="ac b">
+      <div class="ap" style="color:var(--blue);">🔵 Media prioridad — Septiembre</div>
+      <div class="at">Optimizar página Mayoristas para captura de leads</div>
+      <div class="ad">494 vistas en agosto sin ningún mecanismo de captura activo. Acciones concretas: 1) Agregar formulario de contacto visible arriba del fold con campos mínimos (nombre, empresa, teléfono). 2) Incluir un CTA claro ("Solicita tu muestra gratis" o "Cotiza al por mayor"). 3) Revisar el rebote del 49,4% — puede indicar que la página no responde la pregunta principal del visitante. Esta es la palanca de mayor impacto con menor costo de las disponibles.</div>
+      <div class="ai" style="color:var(--blue);">Convierte tráfico B2B existente sin más inversión</div>
+    </div>
+    <div class="ac b">
+      <div class="ap" style="color:var(--blue);">🔵 Media prioridad — Septiembre</div>
+      <div class="at">Revisar configuración de conversiones Google Ads</div>
+      <div class="ad">P.Max registra 81 conversiones en agosto pero 0 compras e-commerce. La discrepancia entre las 518 sesiones que GA4 atribuye a google/cpc y la falta de compras registradas en Google Ads puede deberse a una configuración de eventos de conversión incompleta. Verificar que el evento "purchase" de Shopify está correctamente conectado a Google Ads — si no está, la campaña no puede optimizarse por valor de compra.</div>
+      <div class="ai" style="color:var(--blue);">Habilita optimización por compras reales</div>
+    </div>
+    <div class="ac g">
+      <div class="ap" style="color:var(--green);">🟢 Oportunidad — CyberMonday</div>
+      <div class="at">Preparar campaña CyberMonday Chile</div>
+      <div class="ad">CyberMonday Chile ocurre típicamente en octubre. El Cyber Junio 2026 demostró que los eventos de descuento son el formato más rentable del año (ROAS 3.37x vs 1.08x en agosto). Con tres semanas de anticipación: definir el descuento, producir el creativo específico (el formato "Comenzó el Cyber" ya tiene prueba de tracción), preparar la landing, y segmentar la audiencia de retargeting con los carritos abandonados de julio y agosto. El modelo ya está validado — es cuestión de prepararlo con tiempo.</div>
+      <div class="ai" style="color:var(--green);">Proyección: ROAS 3x+ durante los días del evento</div>
+    </div>
+    <div class="ac g">
+      <div class="ap" style="color:var(--green);">🟢 Oportunidad — Contenido SEO</div>
+      <div class="at">Landing específica para "açaí para máquina soft"</div>
+      <div class="ad">La página /acai-para-maquina-soft/ tiene CTR 20% en posición 4,6 — ya está funcionando sin esfuerzo. Si el contenido es sólido y el precio está visible, esta página puede generar leads B2B de alta intención de forma orgánica. Revisar: ¿tiene descripción completa del producto? ¿precio visible? ¿formulario o contacto directo? Si falta cualquiera de estos elementos, agregarlos puede duplicar la conversión sin cambiar el tráfico.</div>
+      <div class="ai" style="color:var(--green);">Leads B2B desde SEO sin inversión adicional</div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 PROYECCIÓN SEPTIEMBRE -->
+<section class="sec az">
+  <div class="sl"><span>11 · Proyección Septiembre 2026</span></div>
+  <h2 class="st">Escenarios</h2>
+  <p class="sd">Septiembre incluye el 18 (fiestas patrias Chile), que típicamente genera un pico de consumo en productos premium y experiencias. Además, es el mes previo a CyberMonday — buena oportunidad para activar retargeting y calentar audiencias.</p>
+
+  <div class="pj">
+    <div class="pc" style="border-top:3px solid var(--green);">
+      <div class="pt" style="color:var(--green);">Optimista</div>
+      <div class="ps">Creativos B2C renovados + B2B reactivado + optimización Google + Mayoristas optimizada</div>
+      <div class="pm">
+        <div><span class="l">Inversión proyectada</span><span class="v">$420.000</span></div>
+        <div><span class="l">ROAS Meta B2C</span><span class="v" style="color:var(--green);">2.5–3.5x</span></div>
+        <div><span class="l">Ingresos B2C</span><span class="v">$700.000–1.100.000</span></div>
+        <div><span class="l">Leads B2B</span><span class="v" style="color:var(--blue);">25–40 leads</span></div>
+        <div><span class="l">CPL B2B</span><span class="v" style="color:var(--blue);">&lt;$6.000</span></div>
+        <div><span class="l">Supuesto clave</span><span class="v" style="font-size:14px;">Creativos listos antes del 8 sep para que el algoritmo los optimice durante las 3 semanas previas al 18</span></div>
+      </div>
+    </div>
+    <div class="pc" style="border-top:3px solid var(--amber);">
+      <div class="pt" style="color:var(--amber);">Conservador</div>
+      <div class="ps">Mismos creativos · Sin B2B · Sin cambios en Google · Pico puntual del 18</div>
+      <div class="pm">
+        <div><span class="l">Inversión proyectada</span><span class="v">$350.000</span></div>
+        <div><span class="l">ROAS Meta B2C</span><span class="v" style="color:var(--amber);">1.0–1.5x</span></div>
+        <div><span class="l">Ingresos B2C</span><span class="v">$300.000–500.000</span></div>
+        <div><span class="l">Leads B2B</span><span class="v" style="color:var(--muted);">0</span></div>
+        <div><span class="l">Pico 18 sep</span><span class="v" style="font-size:14px;">+20–30% sobre la semana base si se activa campaña puntual</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ins g" style="margin-top:20px;">
+    <div class="ins-t">→ La oportunidad del 18 de septiembre</div>
+    <p>El 18 de septiembre es el evento estacional más relevante de septiembre en Chile. Productos premium de alimentación tienen picos de compra en la semana previa (12–17 sep). Un kreativo de "açaí para el 18" o "smoothie de fiestas patrias" con descuento puntual o envío gratis activado entre el 10 y el 20 de septiembre puede generar un pico similar al Cyber de junio (ROAS 3.37x) con inversión acotada. El dato de demografía —mujeres 35–44 en Santiago— hace esta segmentación muy precisa.</p>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="logo">La Ola Studio</div>
+    <div style="font-size:11px;color:rgba(240,237,232,.45);margin-top:4px;">Informe de Performance · Fün Superfoods · Agosto 2026</div>
+  </div>
+  <div class="info">
+    Elaborado el 1 de septiembre de 2026<br>
+    Fuentes: Meta Ads · Google Ads · Search Console · GA4 · Instagram
+  </div>
+</footer>
+
+<script>
+Chart.defaults.color='#9A9A9A';
+Chart.defaults.borderColor='rgba(255,255,255,0.06)';
+const AMBER='#E99F2F',GREEN='#5BBF8A',BLUE='#7B9FE8',RED='#B9352E';
+
+const labs=['Oct 25','Nov 25','Dic 25','Ene 26','Feb 26','Mar 26','Abr 26','May 26','Jun 26','Jul 26','Ago 26'];
+const roasMeta=[null,7.86,null,1.16,4.42,null,0.03,1.89,2.77,1.30,1.08];
+const roasGA=[0.40,2.45,1.97,2.11,1.74,3.03,0.69,1.92,9.48,1.86,0.001];
+const invMeta=[0,32405,186,101398,348988,0,285946,537168,467355,341545,113380];
+const invGA=[174242,291520,303097,137128,95731,91358,93716,94615,49155,250276,201727];
+const valMeta=[0,254857,76123,117527,1541278,0,8036,1015411,1011547,445171,122491];
+const valGA=[69818,715484,596400,288847,166718,276545,64803,181626,466088,466088,132];
+
+// ROAS Meta
+new Chart(document.getElementById('chartROAS'),{type:'line',data:{labels:labs,datasets:[
+  {label:'ROAS Meta B2C',data:roasMeta,borderColor:GREEN,backgroundColor:'rgba(91,191,138,.08)',fill:true,tension:.4,spanGaps:false,
+   pointRadius:labs.map((_,i)=>i===10?8:3),pointBackgroundColor:labs.map((_,i)=>i===10?GREEN:'rgba(91,191,138,.5)')},
+  {label:'Línea ROAS óptimo (3x)',data:labs.map(()=>3),borderColor:'rgba(233,159,47,.4)',borderDash:[4,4],pointRadius:0,tension:0}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},
+scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:9},callback:v=>v+'x'}}}}});
+
+// Rev vs Inv
+new Chart(document.getElementById('chartRevInv'),{type:'bar',data:{labels:labs,datasets:[
+  {label:'Inversión',data:labs.map((_,i)=>invGA[i]+invMeta[i]),backgroundColor:'rgba(123,159,232,.5)',borderRadius:2},
+  {label:'Ingresos B2C',data:labs.map((_,i)=>valGA[i]+valMeta[i]),backgroundColor:'rgba(91,191,138,.5)',borderRadius:2}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},
+scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:9},callback:v=>v>=1000000?'$'+(v/1000000).toFixed(1)+'M':'$'+(v/1000).toFixed(0)+'K'}}}}});
+
+// SEO 16 months
+const seoL=['May 25','Jun 25','Jul 25','Ago 25','Sep 25','Oct 25','Nov 25','Dic 25','Ene 26','Feb 26','Mar 26','Abr 26','May 26','Jun 26','Jul 26','Ago 26'];
+const seoC=[680,749,933,856,823,915,738,665,864,875,675,403,412,299,297,306];
+const seoDs={labels:seoL,datasets:[{label:'Clics orgánicos',data:seoC,borderColor:BLUE,backgroundColor:'rgba(123,159,232,.12)',fill:true,tension:.4,
+  pointRadius:seoL.map((_,i)=>i===15?8:3),pointBackgroundColor:seoL.map((_,i)=>i===15?BLUE:'rgba(123,159,232,.5)')}]};
+['chartSEO','chartSEO2'].forEach(id=>{
+  const c=document.getElementById(id);if(!c)return;
+  new Chart(c,{type:'line',data:seoDs,options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{font:{size:10}}}},
+    scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:9}}}}}});
+});
+
+// Ads evolution may-ago
+new Chart(document.getElementById('chartAdsEvol'),{type:'line',data:{
+  labels:['Mayo 26','Junio 26','Julio 26','Agosto 26'],
+  datasets:[
+    {label:'Video Pitaya sexy',data:[2.75,4.25,1.14,1.57],borderColor:AMBER,tension:.4,pointRadius:5},
+    {label:'Video Pineado del perfil',data:[6.13,1.85,1.51,0.39],borderColor:BLUE,tension:.4,pointRadius:5},
+    {label:'Catálogo',data:[null,4.10,1.73,0],borderColor:GREEN,tension:.4,spanGaps:false,pointRadius:5},
+  ]
+},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},
+scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:10},callback:v=>v+'x'}}}}});
+
+// Same for section 08
+new Chart(document.getElementById('chartAds2'),{type:'line',data:{
+  labels:['Mayo 26','Junio 26','Julio 26','Agosto 26'],
+  datasets:[
+    {label:'Video Pitaya sexy',data:[2.75,4.25,1.14,1.57],borderColor:AMBER,tension:.4,pointRadius:5},
+    {label:'Video Pineado del perfil',data:[6.13,1.85,1.51,0.39],borderColor:BLUE,tension:.4,pointRadius:5},
+  ]
+},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},
+scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:10},callback:v=>v+'x'}}}}});
+</script>
+</body>
+</html>
